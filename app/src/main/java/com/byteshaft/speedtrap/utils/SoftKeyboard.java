@@ -18,7 +18,7 @@ public class SoftKeyboard implements View.OnFocusChangeListener {
     private int layoutBottom;
     private InputMethodManager im;
     private int[] coords;
-    private boolean isKeyboardShow;
+    public static boolean isKeyboardShow;
     private SoftKeyboardChangesThread softKeyboardThread;
     private List<EditText> editTextList;
 
@@ -30,7 +30,7 @@ public class SoftKeyboard implements View.OnFocusChangeListener {
         initEditTexts(layout);
         this.im = im;
         this.coords = new int[2];
-        this.isKeyboardShow = false;
+        isKeyboardShow = false;
         this.softKeyboardThread = new SoftKeyboardChangesThread();
         this.softKeyboardThread.start();
     }

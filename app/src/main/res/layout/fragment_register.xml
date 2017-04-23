@@ -1,6 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:animateLayoutChanges="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    tools:context="com.byteshaft.speedtrap.MainActivity">
 
-</LinearLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:overScrollMode="never"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/ll_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="42dp"
+            android:layout_marginRight="42dp"
+            android:focusableInTouchMode="true"
+            android:animateLayoutChanges="true"
+            android:orientation="vertical">
+
+                <CheckBox
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/cb_register_staff_check"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:layout_marginBottom="24dp"
+                    android:drawablePadding="10dp"
+                    android:drawableRight="@mipmap/ic_edit_text_administrator"
+                    android:background="@drawable/background_edit_text"
+                    android:text="I am a staff member"
+                    android:textSize="16dp"
+                    android:textColor="@android:color/holo_orange_light"
+                    android:buttonTint="@android:color/darker_gray"/>
+
+            <EditText
+                android:id="@+id/et_register_full_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/background_edit_text"
+                android:drawableLeft="@mipmap/ic_edit_text_full_name"
+                android:drawablePadding="10dp"
+                android:hint="Full Name"
+                android:textColorHint="@android:color/darker_gray"
+                android:inputType="textPersonName"
+                android:maxLength="20"
+                android:padding="10dp"
+                android:textColor="#ffffff"
+                android:textCursorDrawable="@null"
+                android:textSize="18dp" />
+
+            <EditText
+                android:id="@+id/et_register_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/background_edit_text"
+                android:drawableLeft="@mipmap/ic_edit_text_email"
+                android:drawablePadding="10dp"
+                android:hint="E-Mail"
+                android:textColorHint="@android:color/darker_gray"
+                android:inputType="textEmailAddress"
+                android:maxLength="48"
+                android:padding="10dp"
+                android:textColor="#ffffff"
+                android:textCursorDrawable="@null"
+                android:textSize="18dp" />
+
+            <EditText
+                android:id="@+id/et_register_email_repeat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/background_edit_text"
+                android:drawableLeft="@mipmap/ic_edit_text_email"
+                android:drawablePadding="10dp"
+                android:hint="Repeat E-Mail"
+                android:textColorHint="@android:color/darker_gray"
+                android:inputType="textEmailAddress"
+                android:maxLength="48"
+                android:padding="10dp"
+                android:textColor="#ffffff"
+                android:textCursorDrawable="@null"
+                android:textSize="18dp" />
+
+            <EditText
+                android:id="@+id/et_register_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/background_edit_text"
+                android:drawableLeft="@mipmap/ic_edit_text_password"
+                android:drawablePadding="10dp"
+                android:hint="Password"
+                android:textColorHint="@android:color/darker_gray"
+                android:inputType="textPassword"
+                android:maxLength="16"
+                android:padding="10dp"
+                android:textColor="#ffffff"
+                android:textCursorDrawable="@null"
+                android:textSize="18dp" />
+
+            <EditText
+                android:id="@+id/et_register_confirm_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/background_edit_text"
+                android:drawableLeft="@mipmap/ic_edit_text_password"
+                android:drawablePadding="10dp"
+                android:hint="Repeat Password"
+                android:textColorHint="@android:color/darker_gray"
+                android:inputType="textPassword"
+                android:maxLength="16"
+                android:padding="10dp"
+                android:textColor="#ffffff"
+                android:textCursorDrawable="@null"
+                android:textSize="18dp" />
+
+                <EditText
+                    android:id="@+id/et_register_contact_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/background_edit_text"
+                    android:drawableLeft="@mipmap/ic_edit_text_phone"
+                    android:drawablePadding="10dp"
+                    android:hint="Contact"
+                    android:textColorHint="@android:color/darker_gray"
+                    android:inputType="phone"
+                    android:maxLength="20"
+                    android:padding="10dp"
+                    android:textColor="#ffffff"
+                    android:textCursorDrawable="@null"
+                    android:visibility="gone"
+                    android:textSize="18dp" />
+
+                <Button
+                    android:id="@+id/btn_register_create_account"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_button"
+                    android:padding="10dp"
+                    android:text="Create Account"
+                    android:textColor="@drawable/button_text_color"
+                    android:textSize="18dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_register_terms_of_service_check"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:textColor="#ffffff"
+                        android:layout_gravity="center_horizontal"
+                        android:buttonTint="@android:color/darker_gray"/>
+            </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

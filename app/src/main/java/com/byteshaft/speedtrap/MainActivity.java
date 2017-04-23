@@ -25,13 +25,12 @@ public class MainActivity extends FragmentActivity {
         RelativeLayout rlMainLayout = (RelativeLayout) findViewById(R.id.rl_main_layout);
         InputMethodManager im = (InputMethodManager) getSystemService(Service.INPUT_METHOD_SERVICE);
         mSoftKeyboard = new SoftKeyboard(rlMainLayout, im);
-        Helpers.loadFragment(fragmentManager, new WelcomeFragment(), "WelcomeFragment");
+        Helpers.loadFragment(fragmentManager, new WelcomeFragment(), false, null);
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        if (fragmentManager.getBackStackEntryCount() > 1) {
+        if (fragmentManager.getBackStackEntryCount() > 0) {
             fragmentManager.popBackStack();
         } else {
             super.onBackPressed();

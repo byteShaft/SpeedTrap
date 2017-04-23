@@ -35,6 +35,14 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         baseViewWelcomeFragment = inflater.inflate(R.layout.fragment_welcome, container, false);
 
+        etLoginEmail = (EditText) baseViewWelcomeFragment.findViewById(R.id.et_login_email);
+        etLoginPassword = (EditText) baseViewWelcomeFragment.findViewById(R.id.et_login_password);
+        btnLogin = (Button) baseViewWelcomeFragment.findViewById(R.id.btn_login_login);
+        btnLogin.setOnClickListener(this);
+        btnRegister = (Button) baseViewWelcomeFragment.findViewById(R.id.btn_login_register);
+        btnRegister.setOnClickListener(this);
+        tvForgotPassword = (TextView) baseViewWelcomeFragment.findViewById(R.id.tv_login_forgot_password);
+        tvForgotPassword.setOnClickListener(this);
 
         return baseViewWelcomeFragment;
     }
@@ -42,9 +50,7 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (Helpers.isSoftKeyboardOpen()) {
-            MainActivity.mSoftKeyboard.closeSoftKeyboard();
-        }
+        MainActivity.mSoftKeyboard.closeSoftKeyboard();
         switch (v.getId()) {
             case R.id.btn_login_login:
                 sLoginEmail = etLoginEmail.getText().toString();
@@ -54,10 +60,10 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.btn_login_register:
-                Helpers.loadFragment(MainActivity.fragmentManager, new RegisterFragment(), "RegisterFragment");
+                Helpers.loadFragment(MainActivity.fragmentManager, new RegisterFragment(), false, "RegisterFragment");
                 break;
             case R.id.tv_login_forgot_password:
-                Helpers.loadFragment(MainActivity.fragmentManager, new RecoveryFragment(), "Recovery Fragment");
+                Helpers.loadFragment(MainActivity.fragmentManager, new RecoveryFragment(), true, "Recovery Fragment");
                 break;
         }
     }
