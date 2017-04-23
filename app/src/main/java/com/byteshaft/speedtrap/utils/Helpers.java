@@ -2,16 +2,28 @@ package com.byteshaft.speedtrap.utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.Build;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.WindowManager;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.byteshaft.speedtrap.R;
 
@@ -22,18 +34,9 @@ import com.byteshaft.speedtrap.R;
 public class Helpers {
 
     private static ProgressDialog progressDialog;
-    private static boolean isSoftKeyboardOpen;
 
     public static void setStatusBarTranslucent(Activity activity) {
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-    }
-
-    public static boolean isSoftKeyboardOpen() {
-        return isSoftKeyboardOpen;
-    }
-
-    public static void setIsSoftKeyboardOpen(boolean state) {
-        isSoftKeyboardOpen = state;
     }
 
 
@@ -213,12 +216,75 @@ public class Helpers {
         return true;
     }
 
-    public static void loadFragment(FragmentManager fragmentManager, android.support.v4.app.Fragment fragment, String fragmentName) {
+    public static void loadFragment(FragmentManager fragmentManager, android.support.v4.app.Fragment fragment, boolean openingRecoveryFragment,
+                                    String fragmentName) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.setCustomAnimations(R.anim.anim_transition_fragment_slide_right_enter, R.anim.anim_transition_fragment_slide_left_exit,
-                R.anim.anim_transition_fragment_slide_left_enter, R.anim.anim_transition_fragment_slide_right_exit);
-        transaction.replace(R.id.container, fragment).addToBackStack(fragmentName);
+        if (openingRecoveryFragment) {
+            transaction.setCustomAnimations(R.anim.anim_transition_fragment_slide_left_enter, R.anim.anim_transition_fragment_slide_right_exit,
+                    R.anim.anim_transition_fragment_slide_right_enter, R.anim.anim_transition_fragment_slide_left_exit);
+        } else {
+            transaction.setCustomAnimations(R.anim.anim_transition_fragment_slide_right_enter, R.anim.anim_transition_fragment_slide_left_exit,
+                    R.anim.anim_transition_fragment_slide_left_enter, R.anim.anim_transition_fragment_slide_right_exit);
+        }
+        if (fragmentName != null) {
+            transaction.replace(R.id.container, fragment).addToBackStack(fragmentName);
+        } else {
+            transaction.replace(R.id.container, fragment);
+        }
         transaction.commit();
+    }
+
+
+    public static void WebViewAlertDialog(Context context, String url) {
+        final Dialog dialog = new Dialog(context);
+        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = layoutInflater.inflate(R.layout.layout_tos_dialog, null);
+        dialog.setContentView(layout);
+        dialog.setTitle("Terms of Service");
+        dialog.setCancelable(false);
+        final ProgressBar pbTOSDialog = (ProgressBar) layout.findViewById(R.id.pb_tos_dialog);
+        Button dismissButton = (Button) layout.findViewById(R.id.btn_tos_dialog_dismiss);
+        final WebView wvTOS = (WebView) layout.findViewById(R.id.wv_tos_dialog);
+        WebSettings webSettings = wvTOS.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setBuiltInZoomControls(true);
+        webSettings.setUseWideViewPort(true);
+        webSettings.setLoadWithOverviewMode(true);
+        wvTOS.setInitialScale(100);
+        wvTOS.loadUrl(url);
+        wvTOS.setWebViewClient(new WebViewClient() {
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                pbTOSDialog.setVisibility(View.GONE);
+                wvTOS.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+            }
+        });
+
+        dismissButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+
+    public static void showSnackBar(View view, String message, int time, String textColor) {
+        Snackbar snackbar = Snackbar.make(view, message, time);
+        View snackBarView = snackbar.getView();
+        TextView snackBarText = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+        snackBarText.setGravity(Gravity.CENTER_HORIZONTAL);
+        snackBarText.setTextColor(Color.parseColor(textColor));
+        snackbar.show();
     }
 
 }

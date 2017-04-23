@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">SpeedTrap</string>
+
+
+    <string name="TermsOfServiceInitialText">I have read and understood the </string>
+    <string name="TermsOfServiceLateralText"> TOS</string>
 </resources>
