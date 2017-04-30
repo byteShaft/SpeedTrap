@@ -29,7 +29,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="10dp"
                 android:padding="10dp"
-                android:text="Password Recovery"
+                android:text="@string/textViewPasswordRecovery"
                 android:textColor="#ffffff"
                 android:textSize="16dp" />
 
@@ -41,7 +41,7 @@
                 android:background="@drawable/background_edit_text"
                 android:drawableLeft="@mipmap/ic_edit_text_email"
                 android:drawablePadding="10dp"
-                android:hint="E-Mail"
+                android:hint="@string/fieldHintEmail"
                 android:textColorHint="@android:color/darker_gray"
                 android:inputType="textEmailAddress"
                 android:maxLength="48"
@@ -66,7 +66,7 @@
                     android:background="@drawable/background_edit_text"
                     android:drawableLeft="@mipmap/ic_edit_text_confirmation_code"
                     android:drawablePadding="10dp"
-                    android:hint="Confirmation Code"
+                    android:hint="@string/fieldHintConfirmationCode"
                     android:textColorHint="@android:color/darker_gray"
                     android:inputType="number"
                     android:maxLength="5"
@@ -83,7 +83,7 @@
                     android:background="@drawable/background_edit_text"
                     android:drawableLeft="@mipmap/ic_edit_text_password"
                     android:drawablePadding="10dp"
-                    android:hint="New Password"
+                    android:hint="@string/fieldHintNewPassword"
                     android:textColorHint="@android:color/darker_gray"
                     android:inputType="textPassword"
                     android:maxLength="20"
@@ -101,7 +101,7 @@
                     android:background="@drawable/background_edit_text"
                     android:drawableLeft="@mipmap/ic_edit_text_password"
                     android:drawablePadding="10dp"
-                    android:hint="Confirm Password"
+                    android:hint="@string/fieldHintRepeatPassword"
                     android:textColorHint="@android:color/darker_gray"
                     android:inputType="textPassword"
                     android:maxLength="20"
@@ -117,7 +117,7 @@
                     android:layout_marginBottom="10dp"
                     android:background="@drawable/background_button"
                     android:padding="10dp"
-                    android:text="Submit"
+                    android:text="@string/buttonSubmit"
                     android:textColor="@drawable/button_text_color"
                     android:textSize="18dp" />
             </LinearLayout>
@@ -129,7 +129,7 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/background_button"
                 android:padding="10dp"
-                android:text="Recover"
+                android:text="@string/buttonRecover"
                 android:textColor="@drawable/button_text_color"
                 android:textSize="18dp" />
 

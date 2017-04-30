@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.byteshaft.speedtrap.R;
 
@@ -16,11 +17,20 @@ import com.byteshaft.speedtrap.R;
 public class TermsFragment extends Fragment {
 
     View baseViewTermsFragment;
+    Button btnTermsBack;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         baseViewTermsFragment = inflater.inflate(R.layout.fragment_terms, container, false);
+
+        btnTermsBack = (Button) baseViewTermsFragment.findViewById(R.id.btn_terms_back);
+        btnTermsBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
 
         return baseViewTermsFragment;
     }
