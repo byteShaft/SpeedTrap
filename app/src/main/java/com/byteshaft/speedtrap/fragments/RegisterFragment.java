@@ -13,10 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.byteshaft.speedtrap.MainActivity;
 import com.byteshaft.speedtrap.R;
 import com.byteshaft.speedtrap.utils.Helpers;
 
@@ -73,20 +73,11 @@ public class RegisterFragment extends Fragment {
                 if (validateRegisterInfo()) {
 
                 }
+
+                Helpers.loadFragment(MainActivity.fragmentManager, new ConfirmationFragment(), false, "Confirmation Fragment");
             }
         });
 
-        cbRegisterStaffCheck = (CheckBox) baseViewRegisterFragment.findViewById(R.id.cb_register_staff_check);
-        cbRegisterStaffCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    etRegisterUserContactNumber.setVisibility(View.VISIBLE);
-                } else {
-                    etRegisterUserContactNumber.setVisibility(View.GONE);
-                }
-            }
-        });
         cbRegisterTermsOfServiceCheck = (CheckBox) baseViewRegisterFragment.findViewById(R.id.cb_register_terms_of_service_check);
 
         SpannableStringBuilder text = new SpannableStringBuilder();
@@ -95,7 +86,7 @@ public class RegisterFragment extends Fragment {
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                Helpers.WebViewAlertDialog(getActivity(), urlTOS);
+                Helpers.loadFragment(MainActivity.fragmentManager, new TermsFragment(), false, "TermsFragment");
             }
         };
         TextPaint ds = new TextPaint();
@@ -115,44 +106,44 @@ public class RegisterFragment extends Fragment {
         boolean valid = true;
 
         if (sRegisterFullName.trim().isEmpty()) {
-            etRegisterUserFullName.setError("Empty");
+            etRegisterUserFullName.setError(getString(R.string.errorEmpty));
             valid = false;
         } else {
             etRegisterUserFullName.setError(null);
         }
 
         if (sRegisterEmail.trim().isEmpty()) {
-            etRegisterUserEmail.setError("Empty");
+            etRegisterUserEmail.setError(getString(R.string.errorEmpty));
             valid = false;
         } else if (!sRegisterEmail.trim().isEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(sRegisterEmail).matches()) {
-            etRegisterUserEmail.setError("Invalid E-Mail");
+            etRegisterUserEmail.setError(getString(R.string.errorInvalidEmail));
             valid = false;
         } else if (!sRegisterEmail.equals(sRegisterEmailRepeat)) {
-            etRegisterUserEmailRepeat.setError("E-Mail doesn't match");
+            etRegisterUserEmailRepeat.setError(getString(R.string.errorEmailDoesNotMatch));
             valid = false;
         } else {
             etRegisterUserEmail.setError(null);
         }
 
         if (sRegisterPassword.trim().isEmpty() || sRegisterPassword.length() < 6) {
-            etRegisterUserPassword.setError("Minimum 6 Characters");
+            etRegisterUserPassword.setError(getString(R.string.errorMinimumSixCharacters));
             valid = false;
         } else if (!sRegisterPassword.equals(sRegisterConfirmPassword)) {
-            etRegisterUserConfirmPassword.setError("Password doesn't match");
+            etRegisterUserConfirmPassword.setError(getString(R.string.errorPasswordDoesNotMatch));
             valid = false;
         } else {
             etRegisterUserPassword.setError(null);
         }
 
         if (sRegisterContactNumber.trim().isEmpty()) {
-            etRegisterUserContactNumber.setError("Empty");
+            etRegisterUserContactNumber.setError(getString(R.string.errorEmpty));
             valid = false;
         } else {
             etRegisterUserContactNumber.setError(null);
         }
 
         if (valid && !cbRegisterTermsOfServiceCheck.isChecked()) {
-            Helpers.showSnackBar(getView(), "Check terms of service to continue", Snackbar.LENGTH_LONG, "#f44336");
+            Helpers.showSnackBar(getView(), getString(R.string.errorCheckTermsOfServiceToContinue), Snackbar.LENGTH_LONG, "#f44336");
             valid = false;
         }
 

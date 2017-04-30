@@ -4,4 +4,44 @@
 
     <string name="TermsOfServiceInitialText">I have read and understood the </string>
     <string name="TermsOfServiceLateralText"> TOS</string>
+
+    <string name="fieldHintEmail">E-Mail</string>
+    <string name="fieldHintRepeatEmail">Repeat E-Mail</string>
+    <string name="fieldHintPassword">Password</string>
+    <string name="fieldHintNewPassword">New Password</string>
+    <string name="fieldHintRepeatPassword">Repeat Password</string>
+    <string name="fieldHintFullName">Full Name</string>
+    <string name="fieldHintContact">Contact</string>
+    <string name="fieldHintConfirmationCode">Confirmation Code</string>
+
+    <string name="buttonLogin">Login</string>
+    <string name="buttonRegister">Register</string>
+    <string name="buttonCreateAccount">Create Account</string>
+    <string name="buttonSubmit">Submit</string>
+    <string name="buttonRecover">Recover</string>
+    <string name="buttonBack">Back</string>
+
+
+    <string name="textViewForgotPassword">Forgot Password? Recover</string>
+    <string name="textViewPasswordRecovery">Password Recovery</string>
+    <string name="textViewOtpSentCheckInbox">OTP Sent - Check Inbox</string>
+    <string name="textViewOtpResendFailed">OTP Resend Failed</string>
+    <string name="textViewActivateAccount">Activate Account</string>
+    <string name="textViewTermsOfService">Terms of service</string>
+
+
+    <string name="messageOtpSuccessfullySent">OTP successfully sent</string>
+    <string name="messageOtpSuccessfullyConfirmed">OTP successfully confirmed</string>
+    <string name="messageOtpAlreadySentWaitForTheCountdown">OTP already sent - Wait for the Countdown</string>
+
+    <string name="errorMinimumFourCharacters">Minimum 4 Characters</string>
+    <string name="errorMinimumSixCharacters">Minimum 6 Characters</string>
+    <string name="errorEmpty">Empty</string>
+    <string name="errorInvalidEmail">Invalid E-Mail</string>
+    <string name="errorEmailDoesNotMatch">E-Mail does not match</string>
+    <string name="errorPasswordDoesNotMatch">Password does not match</string>
+    <string name="errorCheckTermsOfServiceToContinue">Check terms of service to continue</string>
+    <string name="errorLocationNotAvailable">Location not available</string>
+    <string name="errorMapNotReady">Map not ready</string>
+
 </resources>

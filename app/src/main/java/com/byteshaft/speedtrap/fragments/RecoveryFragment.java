@@ -13,7 +13,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.byteshaft.speedtrap.MainActivity;
 import com.byteshaft.speedtrap.R;
 
 /**
@@ -70,7 +69,7 @@ public class RecoveryFragment extends Fragment implements View.OnClickListener {
             case R.id.btn_forgot_password_recover:
                 passwordRecoveryEmail = etForgotPasswordEmail.getText().toString();
                 if (validateRecoverInfo()) {
-                    MainActivity.mSoftKeyboard.closeSoftKeyboard();
+//                    MainActivity.mSoftKeyboard.closeSoftKeyboard();
 //                    new UserRecoveryTask().execute();
                 }
                 break;
@@ -80,7 +79,7 @@ public class RecoveryFragment extends Fragment implements View.OnClickListener {
                 forgotPasswordNewPasswordRepeat = etForgotPasswordConfirmPassword.getText().toString();
 
                 if (validateSubmitInfo()) {
-                    MainActivity.mSoftKeyboard.closeSoftKeyboard();
+//                    MainActivity.mSoftKeyboard.closeSoftKeyboard();
 //                    new ChangePasswordTask().execute();
                 }
                 break;

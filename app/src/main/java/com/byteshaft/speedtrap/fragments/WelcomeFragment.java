@@ -1,6 +1,7 @@
 package com.byteshaft.speedtrap.fragments;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -21,13 +22,15 @@ import com.byteshaft.speedtrap.utils.Helpers;
 public class WelcomeFragment extends Fragment implements View.OnClickListener {
 
     View baseViewWelcomeFragment;
+    public static boolean wasPermissionRequestedOnStartup;
 
+    public static boolean isMainActivityForeground;
     Button btnLogin;
     Button btnRegister;
     TextView tvForgotPassword;
     EditText etLoginEmail;
     EditText etLoginPassword;
-    String sLoginEmail;
+    public static String sLoginEmail;
     String sLoginPassword;
 
     @Nullable
@@ -44,19 +47,33 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
         tvForgotPassword = (TextView) baseViewWelcomeFragment.findViewById(R.id.tv_login_forgot_password);
         tvForgotPassword.setOnClickListener(this);
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (isMainActivityForeground) {
+                    wasPermissionRequestedOnStartup = true;
+                    Helpers.hasPermissionsForDevicesAboveMarshmallowIfNotRequestPermissions(getActivity());
+                }
+            }
+        }, 2000);
+
         return baseViewWelcomeFragment;
     }
 
 
     @Override
     public void onClick(View v) {
-        MainActivity.mSoftKeyboard.closeSoftKeyboard();
+//        MainActivity.mSoftKeyboard.closeSoftKeyboard();
         switch (v.getId()) {
             case R.id.btn_login_login:
                 sLoginEmail = etLoginEmail.getText().toString();
                 sLoginPassword = etLoginPassword.getText().toString();
                 if (validateLoginInput()) {
+                    wasPermissionRequestedOnStartup = false;
+                    if (Helpers.isDeviceReadyForLocationAcquisition(getActivity())) {
 //                    taskUserLogin = (UserLoginTask) new UserLoginTask().execute();
+                        Helpers.loadFragment(MainActivity.fragmentManager, new MapFragment(), false, "MapFragment");
+                    }
                 }
                 break;
             case R.id.btn_login_register:
@@ -71,20 +88,13 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
     public boolean validateLoginInput() {
         boolean valid = true;
         if (sLoginEmail.trim().isEmpty()) {
-            etLoginEmail.setError("Empty");
+            etLoginEmail.setError(getString(R.string.errorEmpty));
             valid = false;
         } else if (!sLoginEmail.isEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(sLoginEmail).matches()) {
-            etLoginEmail.setError("Invalid E-Mail");
+            etLoginEmail.setError(getString(R.string.errorInvalidEmail));
             valid = false;
         } else {
             etLoginEmail.setError(null);
-        }
-
-        if (sLoginPassword.trim().isEmpty() || sLoginPassword.length() < 6) {
-            etLoginPassword.setError("Minimum 6 Characters");
-            valid = false;
-        } else {
-            etLoginPassword.setError(null);
         }
         return valid;
     }

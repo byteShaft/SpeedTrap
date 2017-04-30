@@ -1,6 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
 
-</LinearLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+        <LinearLayout
+            android:id="@+id/ll_welcome_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="42dp"
+            android:layout_marginRight="42dp"
+            android:animateLayoutChanges="true">
+
+            <TextView
+                android:id="@+id/tv_confirmation_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:padding="10dp"
+                android:textColor="#ffffff"
+                android:layout_marginBottom="10dp"
+                android:textSize="16dp"
+                android:text="Security Confirmation"/>
+
+            <EditText
+                android:id="@+id/et_confirmation_code_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_edit_text"
+                android:textCursorDrawable="@null"
+                android:textSize="18dp"
+                android:enabled="false"
+                android:maxLength="48"
+                android:textColor="#ffffff"
+                android:inputType="textEmailAddress"
+                android:padding="10dp"
+                android:drawablePadding="10dp"
+                android:layout_marginBottom="10dp"
+                android:drawableLeft="@mipmap/ic_edit_text_email" />
+
+            <EditText
+                android:id="@+id/et_confirmation_code_email_otp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_edit_text"
+                android:textCursorDrawable="@null"
+                android:textSize="18dp"
+                android:hint="E-Mail OTP"
+                android:textColorHint="@android:color/darker_gray"
+                android:maxLength="8"
+                android:textColor="#ffffff"
+                android:inputType="number"
+                android:padding="10dp"
+                android:drawablePadding="10dp"
+                android:layout_marginBottom="10dp"
+                android:drawableLeft="@mipmap/ic_edit_text_confirmation_code" />
+
+            <Button
+                android:id="@+id/btn_confirmation_code_submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:textSize="18dp"
+                android:text="Submit"
+                android:padding="10dp"
+                android:textColor="@drawable/button_text_color"
+                android:background="@drawable/background_button" />
+
+            <Button
+                android:id="@+id/btn_confirmation_code_resend"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:textSize="18dp"
+                android:text="Resend Code"
+                android:padding="10dp"
+                android:textColor="@drawable/button_text_color"
+                android:background="@drawable/background_button" />
+
+            <TextView
+                android:id="@+id/tv_confirmation_code_status_display"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:padding="10dp"
+                android:textSize="14dp"/>
+
+            <TextView
+                android:id="@+id/tv_confirmation_code_resend_timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textColor="#ffffff"
+                android:textSize="12dp"/>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
