@@ -9,7 +9,9 @@ public class AppGlobals extends Application {
 
     private static final String FIRST_RUN_MAP = "first_run_map";
     private static final String UNIQUE_DEVICE_ID = "unique_device_id";
-    private static final String TRAP_ALERT_DISTANCE = "trap_alert_distance";
+    private static final String ALERT_DISTANCE = "alert_distance";
+    private static final String ALERT_SPEED_LIMIT = "alert_speed_limit";
+    private static final String ALERT_VOLUME = "alert_volume";
     private static final String LOGGED_IN = "logged_in";
     private static final String PUSH_NOTIFICATIONS_ENABLED = "push_notifications_enabled";
     private static final String USER_NAME = "user_name";
@@ -64,12 +66,28 @@ public class AppGlobals extends Application {
         return sPreferences.getInt(USER_ID, -1);
     }
 
-    public static void putTrapAlertDistance(int radius) {
-        sPreferences.edit().putInt(TRAP_ALERT_DISTANCE, radius).apply();
+    public static void putAlertDistance(int distance) {
+        sPreferences.edit().putInt(ALERT_DISTANCE, distance).apply();
     }
 
-    public static int getTrapAlertDistance() {
-        return sPreferences.getInt(TRAP_ALERT_DISTANCE, 1000);
+    public static int getAlertDistance() {
+        return sPreferences.getInt(ALERT_DISTANCE, 1000);
+    }
+
+    public static void putAlertSpeedLimit(int speedLimit) {
+        sPreferences.edit().putInt(ALERT_SPEED_LIMIT, speedLimit).apply();
+    }
+
+    public static int getAlertSpeedLimit() {
+        return sPreferences.getInt(ALERT_SPEED_LIMIT, 120);
+    }
+
+    public static void putAlertVolume(int volume) {
+        sPreferences.edit().putInt(ALERT_VOLUME, volume).apply();
+    }
+
+    public static int getAlertVolume() {
+        return sPreferences.getInt(ALERT_VOLUME, 80);
     }
 
     public static void putToken(String token) {

@@ -1,6 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_settings_buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="22dp"
+        android:layout_marginTop="42dp">
+
+        <ImageButton
+            android:id="@+id/ib_settings_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_settings_logout" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/sv_register_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_settings_buttons">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="42dp"
+            android:layout_marginEnd="42dp"
+            android:animateLayoutChanges="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/textAlertDistance"
+                android:textColor="#ffffff" />
+
+            <EditText
+                android:id="@+id/et_settings_alert_radius"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_edit_text"
+                android:drawableStart="@mipmap/ic_edit_text_radius"
+                android:drawablePadding="10dp"
+                android:maxLength="24"
+                android:padding="10dp"
+                android:textColor="#ffffff"
+                android:textSize="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/textAlertSpeedLimit"
+                android:textColor="#ffffff" />
+
+            <EditText
+                android:id="@+id/et_settings_alert_speed_limit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_edit_text"
+                android:drawableStart="@mipmap/ic_edit_text_speed"
+                android:drawablePadding="10dp"
+                android:maxLength="24"
+                android:padding="10dp"
+                android:textColor="#ffffff"
+                android:textSize="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/textAlertVolume"
+                android:textColor="#ffffff" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/background_edit_text">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_alert"/>
+
+                <SeekBar
+                    android:id="@+id/sb_settings_alert_volume"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_settings_update"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/background_button"
+                android:padding="10dp"
+                android:text="@string/buttonUpdate"
+                android:textColor="@drawable/button_text_color"
+                android:textSize="18dp" />
+
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

@@ -82,12 +82,12 @@ public class ConfirmationFragment extends Fragment implements View.OnClickListen
         if (isFragmentOpenedFromLogin) {
             etCodeConfirmationEmail.setText(WelcomeFragment.sLoginEmail);
             sTextEmailEntry = WelcomeFragment.sLoginEmail;
-            tvCodeConfirmationStatusDisplay.setText(getString(R.string.textViewActivateAccount));
+            tvCodeConfirmationStatusDisplay.setText(getString(R.string.textActivateAccount));
             tvCodeConfirmationStatusDisplay.setTextColor(Color.parseColor("#ffffff"));
             return baseViewConfirmationFragment;
         }
 
-        tvCodeConfirmationStatusDisplay.setText(getString(R.string.textViewOtpSentCheckInbox));
+        tvCodeConfirmationStatusDisplay.setText(getString(R.string.textOtpSentCheckInbox));
         tvCodeConfirmationStatusDisplay.setTextColor(Color.parseColor("#A4C639"));
 
         isTimerActive = true;
@@ -158,7 +158,7 @@ public class ConfirmationFragment extends Fragment implements View.OnClickListen
 
     public void onResendSuccess() {
         Helpers.showSnackBar(getView(), getString(R.string.messageOtpSuccessfullySent), Snackbar.LENGTH_LONG, "#A4C639");
-        tvCodeConfirmationStatusDisplay.setText(getString(R.string.textViewOtpSentCheckInbox));
+        tvCodeConfirmationStatusDisplay.setText(getString(R.string.textOtpSentCheckInbox));
         tvCodeConfirmationStatusDisplay.setTextColor(Color.parseColor("#A4C639"));
         tvCodeConfirmationStatusDisplay.clearAnimation();
 
@@ -172,7 +172,7 @@ public class ConfirmationFragment extends Fragment implements View.OnClickListen
 
     public void onResendFailed(String message) {
         Helpers.showSnackBar(getView(), message, Snackbar.LENGTH_LONG, "#f44336");
-        tvCodeConfirmationStatusDisplay.setText(getString(R.string.textViewOtpResendFailed));
+        tvCodeConfirmationStatusDisplay.setText(getString(R.string.textOtpResendFailed));
         tvCodeConfirmationStatusDisplay.setTextColor(Color.parseColor("#f44336"));
         tvCodeConfirmationStatusDisplay.clearAnimation();
     }
