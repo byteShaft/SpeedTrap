@@ -98,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:padding="10dp"
-                android:text="@string/textViewForgotPassword"
+                android:text="@string/textForgotPassword"
                 android:textColor="#ffffff"
                 android:textSize="14dp" />
         </LinearLayout>

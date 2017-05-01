@@ -17,22 +17,29 @@
     <string name="buttonLogin">Login</string>
     <string name="buttonRegister">Register</string>
     <string name="buttonCreateAccount">Create Account</string>
+    <string name="buttonUpdate">Update</string>
     <string name="buttonSubmit">Submit</string>
     <string name="buttonRecover">Recover</string>
     <string name="buttonBack">Back</string>
+    <string name="buttonYes">Yes</string>
+    <string name="buttonCancel">Cancel</string>
 
-
-    <string name="textViewForgotPassword">Forgot Password? Recover</string>
-    <string name="textViewPasswordRecovery">Password Recovery</string>
-    <string name="textViewOtpSentCheckInbox">OTP Sent - Check Inbox</string>
-    <string name="textViewOtpResendFailed">OTP Resend Failed</string>
-    <string name="textViewActivateAccount">Activate Account</string>
-    <string name="textViewTermsOfService">Terms of service</string>
-
+    <string name="textForgotPassword">Forgot Password? Recover</string>
+    <string name="textPasswordRecovery">Password Recovery</string>
+    <string name="textOtpSentCheckInbox">OTP Sent - Check Inbox</string>
+    <string name="textOtpResendFailed">OTP Resend Failed</string>
+    <string name="textActivateAccount">Activate Account</string>
+    <string name="textTermsOfService">Terms of service</string>
+    <string name="textAlertDistance">Alert Distance (Meters)</string>
+    <string name="textAlertSpeedLimit">Alert Speed Limit (Kilometers)</string>
+    <string name="textAlertVolume">Alert Volume</string>
+    <string name="textLogout">Logout</string>
+    <string name="textAreYouSure">Are you sure?</string>
 
     <string name="messageOtpSuccessfullySent">OTP successfully sent</string>
     <string name="messageOtpSuccessfullyConfirmed">OTP successfully confirmed</string>
     <string name="messageOtpAlreadySentWaitForTheCountdown">OTP already sent - Wait for the Countdown</string>
+
 
     <string name="errorMinimumFourCharacters">Minimum 4 Characters</string>
     <string name="errorMinimumSixCharacters">Minimum 6 Characters</string>
