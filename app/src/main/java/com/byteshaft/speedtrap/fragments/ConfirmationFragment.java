@@ -1,6 +1,5 @@
 package com.byteshaft.speedtrap.fragments;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,10 +15,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.byteshaft.requests.HttpRequest;
 import com.byteshaft.speedtrap.MainActivity;
 import com.byteshaft.speedtrap.R;
 import com.byteshaft.speedtrap.utils.AppGlobals;
+import com.byteshaft.speedtrap.utils.EndPoints;
 import com.byteshaft.speedtrap.utils.Helpers;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 
@@ -94,7 +98,7 @@ public class ConfirmationFragment extends Fragment implements View.OnClickListen
         Helpers.setCountDownTimer(120000, 1000, functionSetTimerTextOnTick, functionOnTimerFinish);
         tvCodeConfirmationStatusDisplayTimer.startAnimation(animTimerFading);
         tvCodeConfirmationStatusDisplayTimer.setVisibility(View.VISIBLE);
-        etCodeConfirmationEmail.setText(AppGlobals.getUsername());
+        etCodeConfirmationEmail.setText(RegisterFragment.sRegisterEmail);
 
         return baseViewConfirmationFragment;
     }
@@ -105,24 +109,23 @@ public class ConfirmationFragment extends Fragment implements View.OnClickListen
             case R.id.btn_confirmation_code_submit:
                 sTextEmailEntry = etCodeConfirmationEmail.getText().toString();
                 sConfirmationOtpEmail = etCodeConfirmationEmailOtp.getText().toString();
-                if (validateConfirmationCode()) {
-//                    taskUserConfirmation = (UserConfirmationTask) new UserConfirmationTask().execute();
+                if (isConfirmationCodeDataInputValid()) {
+                    sendConfirmationRequest();
                 }
                 break;
             case R.id.btn_confirmation_code_resend:
                 sTextEmailEntry = etCodeConfirmationEmail.getText().toString();
                 if (isTimerActive) {
-                    Helpers.showSnackBar(baseViewConfirmationFragment,
-                            getString(R.string.messageOtpAlreadySentWaitForTheCountdown),
-                            Snackbar.LENGTH_SHORT, "#ffffff");
+                    Helpers.showSnackBar(getString(R.string.messageOtpAlreadySentWaitForTheCountdown),
+                            Snackbar.LENGTH_SHORT, Color.GREEN);
                 } else {
-//                    taskResendEmail = (UserResendOTP) new UserResendOTP().execute();
+                    sendOtpResendRequest();
                 }
                 break;
         }
     }
 
-    public boolean validateConfirmationCode() {
+    public boolean isConfirmationCodeDataInputValid() {
         boolean valid = true;
         if (sConfirmationOtpEmail.isEmpty() || sConfirmationOtpEmail.length() < 4) {
             etCodeConfirmationEmailOtp.setError(getString(R.string.errorMinimumFourCharacters));
@@ -131,50 +134,6 @@ public class ConfirmationFragment extends Fragment implements View.OnClickListen
             etCodeConfirmationEmailOtp.setError(null);
         }
         return valid;
-    }
-
-    public void onConfirmationSuccess() {
-        Helpers.showSnackBar(getView(), getString(R.string.messageOtpSuccessfullyConfirmed), Snackbar.LENGTH_SHORT, "#A4C639");
-//        if (Helpers.isIsSoftKeyboardOpen()) {
-//            Helpers.closeSoftKeyboard(getActivity());
-//        }
-//        if (AppGlobals.get) {
-//            AppGlobals.putUserType(0);
-//        } else {
-//            AppGlobals.putUserType(1);
-//        }
-//        if (!AppGlobals.isPushNotificationsEnabled()) {
-//            new EnablePushNotificationsTask().execute();
-//        }
-        AppGlobals.setLoggedIn(true);
-        getActivity().finish();
-        startActivity(new Intent(getActivity(), MainActivity.class));
-        otp = null;
-    }
-
-    public void onConfirmationFailed(String message) {
-        Helpers.showSnackBar(getView(), message, Snackbar.LENGTH_SHORT, "#f44336");
-    }
-
-    public void onResendSuccess() {
-        Helpers.showSnackBar(getView(), getString(R.string.messageOtpSuccessfullySent), Snackbar.LENGTH_LONG, "#A4C639");
-        tvCodeConfirmationStatusDisplay.setText(getString(R.string.textOtpSentCheckInbox));
-        tvCodeConfirmationStatusDisplay.setTextColor(Color.parseColor("#A4C639"));
-        tvCodeConfirmationStatusDisplay.clearAnimation();
-
-        isTimerActive = true;
-        Helpers.setCountDownTimer(120000, 1000, functionSetTimerTextOnTick, functionOnTimerFinish);
-        tvCodeConfirmationStatusDisplayTimer.startAnimation(animTimerFading);
-        tvCodeConfirmationStatusDisplayTimer.setVisibility(View.VISIBLE);
-        tvCodeConfirmationStatusDisplay.setVisibility(View.VISIBLE);
-        otp = null;
-    }
-
-    public void onResendFailed(String message) {
-        Helpers.showSnackBar(getView(), message, Snackbar.LENGTH_LONG, "#f44336");
-        tvCodeConfirmationStatusDisplay.setText(getString(R.string.textOtpResendFailed));
-        tvCodeConfirmationStatusDisplay.setTextColor(Color.parseColor("#f44336"));
-        tvCodeConfirmationStatusDisplay.clearAnimation();
     }
 
     @Override
@@ -194,4 +153,128 @@ public class ConfirmationFragment extends Fragment implements View.OnClickListen
         isCodeConfirmationFragmentOpen = true;
     }
 
+    private void sendConfirmationRequest() {
+        HttpRequest request = new HttpRequest(getActivity());
+        Helpers.showProgressDialog(getActivity(), getString(R.string.messageSendingConfirmationRequest));
+        request.setOnReadyStateChangeListener(new HttpRequest.OnReadyStateChangeListener() {
+            @Override
+            public void onReadyStateChange(HttpRequest request, int readyState) {
+                switch (readyState) {
+                    case HttpRequest.STATE_DONE:
+                        Helpers.dismissProgressDialog();
+                        switch (request.getStatus()) {
+                            case HttpURLConnection.HTTP_OK:
+                                onConfirmationSuccess(getString(R.string.messageConfirmationRequestConfirmed), request.getResponseText());
+                                break;
+                            default:
+                                onConfirmationFailed(getString(R.string.messageConfirmationRequestFailed) + "\n" + request.getResponseText());
+                                break;
+                        }
+                }
+            }
+        });
+        request.setOnErrorListener(new HttpRequest.OnErrorListener() {
+            @Override
+            public void onError(HttpRequest request, short error, Exception exception) {
+                onConfirmationFailed(getString(R.string.messageConfirmationRequestFailed));
+            }
+        });
+        request.open("POST", EndPoints.ACTIVATE);
+        request.send(getConfirmationString(sTextEmailEntry, sConfirmationOtpEmail));
+    }
+
+    public static String getConfirmationString(String email, String otp) {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("email", email);
+            json.put("email_otp", otp);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json.toString();
+    }
+
+    private void onConfirmationSuccess(String message, String responseText) {
+        Helpers.showSnackBar(message, Snackbar.LENGTH_SHORT, Color.GREEN);
+        try {
+            JSONObject jsonObject = new JSONObject(responseText);
+            JSONObject jsonObject1 = new JSONObject(jsonObject.toString());
+
+            AppGlobals.setLoggedIn(true);
+            AppGlobals.putToken(jsonObject.getString("token"));
+            AppGlobals.putAlertDistance(jsonObject1.getInt("warning_radius"));
+            AppGlobals.putAlertSpeedLimit(jsonObject1.getInt("warning_speed_limit"));
+            AppGlobals.setSoundAlertEnabled(jsonObject1.getBoolean("sound_alert"));
+            AppGlobals.putAlertVolume(jsonObject1.getInt("alert_volume"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Helpers.loadFragment(MainActivity.fragmentManager, new MapFragment(), false, "MapFragment");
+    }
+
+    private void onConfirmationFailed(String message) {
+        Helpers.showSnackBar(message, Snackbar.LENGTH_SHORT, Color.RED);
+    }
+
+    private void sendOtpResendRequest() {
+        HttpRequest request = new HttpRequest(getActivity());
+        Helpers.showProgressDialog(getActivity(), getString(R.string.messageSendingOtpRequest));
+        request.setOnReadyStateChangeListener(new HttpRequest.OnReadyStateChangeListener() {
+            @Override
+            public void onReadyStateChange(HttpRequest request, int readyState) {
+                switch (readyState) {
+                    case HttpRequest.STATE_DONE:
+                        Helpers.dismissProgressDialog();
+                        switch (request.getStatus()) {
+                            case HttpURLConnection.HTTP_OK:
+                                onResendSuccess(getString(R.string.messageOtpSuccessfullySent));
+                                break;
+                            default:
+                                onResendFailed(getString(R.string.messageOtpRequestFailed));
+                                break;
+                        }
+                }
+            }
+        });
+        request.setOnErrorListener(new HttpRequest.OnErrorListener() {
+            @Override
+            public void onError(HttpRequest request, short error, Exception exception) {
+                onConfirmationFailed(getString(R.string.messageConfirmationRequestFailed) + "\n"
+                        + request.getResponseText());
+            }
+        });
+        request.open("POST", EndPoints.REQUEST_ACTIVATION_KEY);
+        request.send(getResendString(sTextEmailEntry));
+    }
+
+    public static String getResendString(String email) {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("email", email);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json.toString();
+    }
+
+    public void onResendSuccess(String message) {
+        Helpers.showSnackBar(message, Snackbar.LENGTH_LONG, Color.GREEN);
+        tvCodeConfirmationStatusDisplay.setText(getString(R.string.textOtpSentCheckInbox));
+        tvCodeConfirmationStatusDisplay.setTextColor(Color.parseColor("#A4C639"));
+        tvCodeConfirmationStatusDisplay.clearAnimation();
+
+        isTimerActive = true;
+        Helpers.setCountDownTimer(120000, 1000, functionSetTimerTextOnTick, functionOnTimerFinish);
+        tvCodeConfirmationStatusDisplayTimer.startAnimation(animTimerFading);
+        tvCodeConfirmationStatusDisplayTimer.setVisibility(View.VISIBLE);
+        tvCodeConfirmationStatusDisplay.setVisibility(View.VISIBLE);
+        otp = null;
+    }
+
+    public void onResendFailed(String message) {
+        Helpers.showSnackBar(message, Snackbar.LENGTH_LONG, Color.RED);
+        tvCodeConfirmationStatusDisplay.setText(getString(R.string.textOtpResendFailed));
+        tvCodeConfirmationStatusDisplay.setTextColor(Color.parseColor("#f44336"));
+        tvCodeConfirmationStatusDisplay.clearAnimation();
+    }
 }

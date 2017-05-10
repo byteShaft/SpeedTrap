@@ -12,6 +12,7 @@ public class AppGlobals extends Application {
     private static final String ALERT_DISTANCE = "alert_distance";
     private static final String ALERT_SPEED_LIMIT = "alert_speed_limit";
     private static final String ALERT_VOLUME = "alert_volume";
+    private static final String SOUND_ALERT = "sound_alert";
     private static final String LOGGED_IN = "logged_in";
     private static final String PUSH_NOTIFICATIONS_ENABLED = "push_notifications_enabled";
     private static final String USER_NAME = "user_name";
@@ -32,6 +33,14 @@ public class AppGlobals extends Application {
     }
     public static boolean isMapFirstRun() {
         return sPreferences.getBoolean(FIRST_RUN_MAP, true);
+    }
+
+    public static void setSoundAlertEnabled(boolean soundAlert) {
+        sPreferences.edit().putBoolean(SOUND_ALERT, soundAlert).apply();
+    }
+
+    public static boolean isSoundAlertEnabled() {
+        return sPreferences.getBoolean(SOUND_ALERT, true);
     }
 
     public static boolean isLoggedIn() {

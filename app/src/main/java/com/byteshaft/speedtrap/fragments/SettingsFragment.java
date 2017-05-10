@@ -5,7 +5,6 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,13 +34,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     Button btnSettingsUpdate;
     SoundFX soundFX;
     AudioManager audioManager;
+    int cbChangedLevel = AppGlobals.getAlertVolume();
 
     final Runnable logout = new Runnable() {
         public void run() {
             AppGlobals.setLoggedIn(false);
             AppGlobals.setPushNotificationsEnabled(false);
-            MainActivity.fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            Helpers.loadFragment(MainActivity.fragmentManager, new WelcomeFragment(), false, null);
+            Helpers.loadFragment(MainActivity.fragmentManager, new WelcomeFragment(), false, "WelcomeFragment");
         }
     };
 
@@ -50,8 +49,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         baseViewSettingsFragment = inflater.inflate(R.layout.fragment_settings, container, false);
         audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
-        soundFX = new SoundFX();
-        soundFX.initialize(getActivity());
+        soundFX = new SoundFX(getActivity());
 
         ibSettingsLogout = (ImageButton) baseViewSettingsFragment.findViewById(R.id.ib_settings_logout);
         ibSettingsLogout.setOnClickListener(this);
@@ -67,11 +65,21 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 .getStreamMaxVolume(AudioManager.STREAM_MUSIC));
         sbSettingsAlertVolume.setProgress(AppGlobals.getAlertVolume());
 
-
         sbSettingsAlertVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                soundFX.playSound(soundFX.soundEffectOne);
+                int type = Integer.parseInt(etSettingsAlertDistance.getText().toString());
+                cbChangedLevel = i;
+//                if (!soundFX.isAlertInProgress) {
+//                soundFX.playSound(getActivity(), SoundFX.soundEffectThree, i, false);
+//                }
+                if (type == 0) {
+                    soundFX.playSound(getActivity(), SoundFX.soundEffectThree, i, true);
+                } else if (type == 1) {
+                    soundFX.playSound(getActivity(), SoundFX.soundEffectTwo, i, true);
+                } else {
+                    soundFX.playSound(getActivity(), SoundFX.soundEffectOne, i, true);
+                }
             }
 
             @Override

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "622488091222",
+    "firebase_url": "https://speedtrap-1493115896049.firebaseio.com",
+    "project_id": "speedtrap-1493115896049",
+    "storage_bucket": "speedtrap-1493115896049.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:622488091222:android:3806a1afe6d088c9",
+        "android_client_info": {
+          "package_name": "com.byteshaft.speedtrap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "622488091222-k3s4icjq5e8opvpq47afgqpa1m30c6jl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDDKYHnqDstp2crwMPsahagmQ3pUopwkU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

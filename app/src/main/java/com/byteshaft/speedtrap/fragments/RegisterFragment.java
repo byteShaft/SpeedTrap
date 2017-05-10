@@ -1,5 +1,6 @@
 package com.byteshaft.speedtrap.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -8,6 +9,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +18,16 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.byteshaft.requests.HttpRequest;
 import com.byteshaft.speedtrap.MainActivity;
 import com.byteshaft.speedtrap.R;
+import com.byteshaft.speedtrap.utils.EndPoints;
 import com.byteshaft.speedtrap.utils.Helpers;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.HttpURLConnection;
 
 /**
  * Created by fi8er1 on 23/04/2017.
@@ -38,11 +47,10 @@ public class RegisterFragment extends Fragment {
     EditText etRegisterUserContactNumber;
 
     String sRegisterFullName;
-    String sRegisterEmail;
+    public static String sRegisterEmail;
     String sRegisterEmailRepeat;
     String sRegisterPassword;
     String sRegisterConfirmPassword;
-    String sRegisterContactNumber;
 
     Button btnRegisterCreateAccount;
 
@@ -68,13 +76,11 @@ public class RegisterFragment extends Fragment {
                 sRegisterEmailRepeat = etRegisterUserEmailRepeat.getText().toString();
                 sRegisterPassword = etRegisterUserPassword.getText().toString();
                 sRegisterConfirmPassword = etRegisterUserConfirmPassword.getText().toString();
-                sRegisterContactNumber = etRegisterUserContactNumber.getText().toString();
 
-                if (validateRegisterInfo()) {
-
+                if (isRegistrationDataInputValid()) {
+                    sendRegistrationRequest();
+                    Log.i("valid", "valid");
                 }
-
-                Helpers.loadFragment(MainActivity.fragmentManager, new ConfirmationFragment(), false, "Confirmation Fragment");
             }
         });
 
@@ -101,8 +107,7 @@ public class RegisterFragment extends Fragment {
         return baseViewRegisterFragment;
     }
 
-
-    public boolean validateRegisterInfo() {
+    public boolean isRegistrationDataInputValid() {
         boolean valid = true;
 
         if (sRegisterFullName.trim().isEmpty()) {
@@ -135,19 +140,65 @@ public class RegisterFragment extends Fragment {
             etRegisterUserPassword.setError(null);
         }
 
-        if (sRegisterContactNumber.trim().isEmpty()) {
-            etRegisterUserContactNumber.setError(getString(R.string.errorEmpty));
-            valid = false;
-        } else {
-            etRegisterUserContactNumber.setError(null);
-        }
-
         if (valid && !cbRegisterTermsOfServiceCheck.isChecked()) {
-            Helpers.showSnackBar(getView(), getString(R.string.errorCheckTermsOfServiceToContinue), Snackbar.LENGTH_LONG, "#f44336");
+            Helpers.showSnackBar(getString(R.string.errorCheckTermsOfServiceToContinue), Snackbar.LENGTH_LONG, Color.RED);
             valid = false;
         }
-
         return valid;
+    }
+
+    private void sendRegistrationRequest() {
+        HttpRequest request = new HttpRequest(getActivity());
+        Helpers.showProgressDialog(getActivity(), getString(R.string.messageSendingRegistrationRequest));
+        request.setOnReadyStateChangeListener(new HttpRequest.OnReadyStateChangeListener() {
+            @Override
+            public void onReadyStateChange(HttpRequest request, int readyState) {
+                switch (readyState) {
+                    case HttpRequest.STATE_DONE:
+                        Helpers.dismissProgressDialog();
+                        switch (request.getStatus()) {
+                            case HttpURLConnection.HTTP_CREATED:
+                                onRegistrationSuccess(getString(R.string.messageRegistrationRequestSent));
+                                break;
+                            default:
+                                onRegistrationFailed(getString(R.string.messageRegistrationRequestFailed) + "\n" +
+                                        request.getResponseText());
+                                break;
+                        }
+                }
+            }
+        });
+        request.setOnErrorListener(new HttpRequest.OnErrorListener() {
+            @Override
+            public void onError(HttpRequest request, short error, Exception exception) {
+                onRegistrationFailed(getString(R.string.messageRegistrationRequestFailed) + "\n" +
+                        request.getResponseText());
+            }
+        });
+        request.open("POST", EndPoints.REGISTER);
+            request.send(getRegistrationString(sRegisterEmail, sRegisterFullName, sRegisterPassword));
+    }
+
+    public static String getRegistrationString(String email, String fullName, String password) {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("email", email);
+            json.put("full_name", fullName);
+            json.put("password", password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json.toString();
+    }
+
+    private void onRegistrationSuccess(String message) {
+        Helpers.showSnackBar(message, Snackbar.LENGTH_SHORT, Color.GREEN);
+        Helpers.loadFragment(MainActivity.fragmentManager, new ConfirmationFragment(), false, "ConfirmationFragment");
+        ConfirmationFragment.isFragmentOpenedFromLogin = false;
+    }
+
+    private void onRegistrationFailed(String message) {
+        Helpers.showSnackBar(message, Snackbar.LENGTH_SHORT, Color.RED);
     }
 
 }

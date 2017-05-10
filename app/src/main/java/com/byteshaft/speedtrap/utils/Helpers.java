@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
@@ -232,19 +231,25 @@ public class Helpers {
                     R.anim.anim_transition_fragment_slide_left_enter, R.anim.anim_transition_fragment_slide_right_exit);
         }
         if (fragmentName != null) {
+            if (fragmentName.equals("MapFragment") || fragmentName.equals("WelcomeFragment")) {
+                MainActivity.fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                transaction.replace(R.id.container, fragment);
+            } else {
                 transaction.replace(R.id.container, fragment).addToBackStack(fragmentName);
-        } else {
+            }
+        }else {
             transaction.replace(R.id.container, fragment);
         }
         transaction.commit();
     }
 
-    public static void showSnackBar(View view, String message, int time, String textColor) {
-        Snackbar snackbar = Snackbar.make(view, message, time);
+    public static void showSnackBar(String message, int time, int textColor) {
+        Snackbar snackbar = Snackbar.make(MainActivity.rlMainActivity.getRootView(), message, time);
         View snackBarView = snackbar.getView();
         TextView snackBarText = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
         snackBarText.setGravity(Gravity.CENTER_HORIZONTAL);
-        snackBarText.setTextColor(Color.parseColor(textColor));
+        snackBarText.setTextColor(textColor);
+        snackBarText.setMaxLines(3);
         snackbar.show();
     }
 
