@@ -1,6 +1,7 @@
 package com.byteshaft.speedtrap.fragments;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -113,7 +114,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         return baseViewMapFragment;
     }
 
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -130,10 +130,10 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                             ibMapFragmentCurrentLocation.setBackgroundResource(R.drawable.ic_map_current_location_on);
                             bMapCameraOnCurrentLocation = true;
                         } else {
-                            Helpers.showSnackBar(getView(), getString(R.string.errorLocationNotAvailable), Snackbar.LENGTH_SHORT, "#f44336");
+                            Helpers.showSnackBar(getString(R.string.errorLocationNotAvailable), Snackbar.LENGTH_SHORT, Color.RED);
                         }
                     } else {
-                        Helpers.showSnackBar(getView(), getString(R.string.errorMapNotReady), Snackbar.LENGTH_SHORT, "#f44336");
+                        Helpers.showSnackBar(getString(R.string.errorMapNotReady), Snackbar.LENGTH_SHORT, Color.RED);
                     }
                 break;
             case R.id.ib_map_type:
@@ -148,7 +148,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.ib_map_settings:
-                Helpers.loadFragment(MainActivity.fragmentManager, new SettingsFragment(), false, "Settings Fragment");
+                Helpers.loadFragment(MainActivity.fragmentManager, new SettingsFragment(), false, "SettingsFragment");
                 break;
         }
     }
@@ -165,4 +165,5 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         bIsMapFragmentOpen = true;
         Helpers.isDeviceReadyForLocationAcquisition(getActivity());
     }
+
 }

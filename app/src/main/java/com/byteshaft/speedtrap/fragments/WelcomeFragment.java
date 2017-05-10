@@ -1,8 +1,10 @@
 package com.byteshaft.speedtrap.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +13,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.byteshaft.requests.HttpRequest;
 import com.byteshaft.speedtrap.MainActivity;
 import com.byteshaft.speedtrap.R;
+import com.byteshaft.speedtrap.utils.AppGlobals;
+import com.byteshaft.speedtrap.utils.EndPoints;
 import com.byteshaft.speedtrap.utils.Helpers;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.HttpURLConnection;
 
 /**
  * Created by fi8er1 on 23/04/2017.
@@ -24,14 +34,13 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
     View baseViewWelcomeFragment;
     public static boolean wasPermissionRequestedOnStartup;
 
-    public static boolean isMainActivityForeground;
     Button btnLogin;
     Button btnRegister;
     TextView tvForgotPassword;
     EditText etLoginEmail;
     EditText etLoginPassword;
     public static String sLoginEmail;
-    String sLoginPassword;
+    static String sLoginPassword;
 
     @Nullable
     @Override
@@ -50,7 +59,7 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (isMainActivityForeground) {
+                if (MainActivity.isMainActivityForeground) {
                     wasPermissionRequestedOnStartup = true;
                     Helpers.hasPermissionsForDevicesAboveMarshmallowIfNotRequestPermissions(getActivity());
                 }
@@ -60,19 +69,16 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
         return baseViewWelcomeFragment;
     }
 
-
     @Override
     public void onClick(View v) {
-//        MainActivity.mSoftKeyboard.closeSoftKeyboard();
         switch (v.getId()) {
             case R.id.btn_login_login:
                 sLoginEmail = etLoginEmail.getText().toString();
                 sLoginPassword = etLoginPassword.getText().toString();
-                if (validateLoginInput()) {
+                if (isLoginDataInputValid()) {
                     wasPermissionRequestedOnStartup = false;
                     if (Helpers.isDeviceReadyForLocationAcquisition(getActivity())) {
-//                    taskUserLogin = (UserLoginTask) new UserLoginTask().execute();
-                        Helpers.loadFragment(MainActivity.fragmentManager, new MapFragment(), false, "MapFragment");
+                        sendLoginRequest();
                     }
                 }
                 break;
@@ -80,12 +86,13 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
                 Helpers.loadFragment(MainActivity.fragmentManager, new RegisterFragment(), false, "RegisterFragment");
                 break;
             case R.id.tv_login_forgot_password:
-                Helpers.loadFragment(MainActivity.fragmentManager, new RecoveryFragment(), true, "Recovery Fragment");
+                RecoveryFragment.isRecoveryOpenedFromLoginRequest = false;
+                Helpers.loadFragment(MainActivity.fragmentManager, new RecoveryFragment(), true, "RecoveryFragment");
                 break;
         }
     }
 
-    public boolean validateLoginInput() {
+    public boolean isLoginDataInputValid() {
         boolean valid = true;
         if (sLoginEmail.trim().isEmpty()) {
             etLoginEmail.setError(getString(R.string.errorEmpty));
@@ -97,6 +104,85 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
             etLoginEmail.setError(null);
         }
         return valid;
+    }
+
+    public static void sendLoginRequest() {
+        HttpRequest request = new HttpRequest(MainActivity.getInstance());
+        Helpers.showProgressDialog(MainActivity.getInstance(), MainActivity.getInstance().getString(R.string.messageSendingLoginRequest));
+        request.setOnReadyStateChangeListener(new HttpRequest.OnReadyStateChangeListener() {
+            @Override
+            public void onReadyStateChange(HttpRequest request, int readyState) {
+                switch (readyState) {
+                    case HttpRequest.STATE_DONE:
+                        Helpers.dismissProgressDialog();
+                        switch (request.getStatus()) {
+                            case HttpURLConnection.HTTP_OK:
+                                onLoginSuccess(MainActivity.getInstance().getString(R.string.messageLoginRequestConfirmed), request.getResponseText());
+                                break;
+                            case HttpURLConnection.HTTP_FORBIDDEN:
+                                onLoginFailed(MainActivity.getInstance().getString(R.string.messageLoginRequestFailed) + "\n" +
+                                        request.getResponseText());
+                                ConfirmationFragment.isFragmentOpenedFromLogin = true;
+                                Helpers.loadFragment(MainActivity.fragmentManager, new ConfirmationFragment(), false, "ConfirmationFragment");
+                                break;
+                            default:
+                                onLoginFailed(MainActivity.getInstance().getString(R.string.messageLoginRequestFailed) + "\n" +
+                                        request.getResponseText());
+                                try {
+                                    JSONObject jsonObject = new JSONObject(request.getResponseText());
+                                    if (jsonObject.get("detail").toString().equalsIgnoreCase("STAFF_ACCOUNT_NOT_SET")) {
+                                        RecoveryFragment.isRecoveryOpenedFromLoginRequest = true;
+                                        Helpers.loadFragment(MainActivity.fragmentManager, new RecoveryFragment(), true, "RecoveryFragment");
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                break;
+                        }
+                }
+            }
+        });
+        request.setOnErrorListener(new HttpRequest.OnErrorListener() {
+            @Override
+            public void onError(HttpRequest request, short error, Exception exception) {
+                onLoginFailed(MainActivity.getInstance().getString(R.string.messageLoginRequestFailed));
+            }
+        });
+        request.open("POST", EndPoints.LOGIN);
+        request.send(getLoginString(sLoginEmail, sLoginPassword));
+    }
+
+    public static String getLoginString(String email, String password) {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("email", email);
+            json.put("password", password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json.toString();
+    }
+
+    private static void onLoginSuccess(String message, String responseText) {
+        Helpers.showSnackBar(message, Snackbar.LENGTH_SHORT, Color.GREEN);
+        try {
+            JSONObject jsonObject = new JSONObject(responseText);
+            JSONObject jsonObject1 = new JSONObject(jsonObject.toString());
+
+            AppGlobals.setLoggedIn(true);
+            AppGlobals.putToken(jsonObject.getString("token"));
+            AppGlobals.putAlertDistance(jsonObject1.getInt("warning_radius"));
+            AppGlobals.putAlertSpeedLimit(jsonObject1.getInt("warning_speed_limit"));
+            AppGlobals.setSoundAlertEnabled(jsonObject1.getBoolean("sound_alert"));
+            AppGlobals.putAlertVolume(jsonObject1.getInt("alert_volume"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Helpers.loadFragment(MainActivity.fragmentManager, new MapFragment(), false, "MapFragment");
+    }
+
+    private static void onLoginFailed(String message) {
+        Helpers.showSnackBar(message, Snackbar.LENGTH_LONG, Color.RED);
     }
 
 }

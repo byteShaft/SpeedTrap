@@ -14,56 +14,51 @@ import static android.content.Context.AUDIO_SERVICE;
 
 public class SoundFX {
 
-    private SoundPool soundPool;
-    private boolean isSoundPlaying = false;
-    private boolean isSoundLoaded = false;
+    public boolean isAlertInProgress = false;
     private float currentVolume;
     private float maxVolume;
-    private float volume;
-    private AudioManager audioManager;
-    private int counter;
 
+    public static int soundEffectOne = R.raw.beep_one;
+    public static int soundEffectTwo = R.raw.beep_two;
+    public static int soundEffectThree = R.raw.beep_three;
 
-    public int soundEffectOne;
+    private SoundPool soundPool;
 
-    public void initialize(Activity activity) {
-        // AudioManager audio settings for adjusting the volume
-        audioManager = (AudioManager) activity.getSystemService(AUDIO_SERVICE);
+    private int playbackSoundID;
+    private float playbackVolume;
+    private boolean playbackLoop;
+
+    public SoundFX(Activity activity) {
+        AudioManager audioManager = (AudioManager) activity.getSystemService(AUDIO_SERVICE);
         currentVolume = (float) audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         maxVolume = (float) audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        volume = currentVolume / maxVolume;
-        activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        counter = 0;
-        soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+        soundPool = new SoundPool(3, AudioManager.STREAM_MUSIC, 100);
+    }
+
+    public void playSound(Activity activity, int soundID, int volume, boolean loop) {
+        if (volume == -1) {
+            playbackVolume = AppGlobals.getAlertVolume() / maxVolume;
+        } else {
+            playbackVolume = volume / maxVolume;
+        }
+        playbackLoop = loop;
+        if (isAlertInProgress) {
+            soundPool.stop(playbackSoundID);
+            soundPool.release();
+            soundPool = new SoundPool(3, AudioManager.STREAM_MUSIC, 100);
+            isAlertInProgress = false;
+        }
+        playbackSoundID = soundPool.load(activity, soundID, 1);
         soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
             @Override
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                isSoundLoaded = true;
+            public void onLoadComplete(SoundPool soundPool, int i, int i1) {
+                isAlertInProgress = true;
+                if (playbackLoop) {
+                    soundPool.play(playbackSoundID, playbackVolume, playbackVolume, 1, -1, 1f);
+                } else {
+                    soundPool.play(playbackSoundID, playbackVolume, playbackVolume, 1, 1, 1f);
+                }
             }
         });
-        soundEffectOne = soundPool.load(activity, R.raw.digital_beeps, 1);
-    }
-
-    public void playSound (int soundID) {
-        if (isSoundLoaded && !isSoundPlaying) {
-            soundPool.play(soundID, volume, volume, 1, 0, 1f);
-            counter = counter++;
-            isSoundPlaying = true;
-        }
-    }
-
-    public void playSoundInLoop (int soundID) {
-        if (isSoundLoaded && !isSoundPlaying) {
-            soundPool.play(soundID, volume, volume, 1, -1, 1f);
-            counter = counter++;
-            isSoundPlaying = true;
-        }
-    }
-
-    public void stopSound(int soundID) {
-        if (isSoundPlaying) {
-            soundPool.stop(soundID);
-            isSoundPlaying = false;
-        }
     }
 }

@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">SpeedTrap</string>
 
-
     <string name="TermsOfServiceInitialText">I have read and understood the </string>
     <string name="TermsOfServiceLateralText"> TOS</string>
 
@@ -20,12 +19,18 @@
     <string name="buttonUpdate">Update</string>
     <string name="buttonSubmit">Submit</string>
     <string name="buttonRecover">Recover</string>
+    <string name="buttonSetup">Setup</string>
+    <string name="buttonSettings">Settings</string>
     <string name="buttonBack">Back</string>
+    <string name="buttonRecheck">ReCheck</string>
+    <string name="buttonDismiss">Dismiss</string>
     <string name="buttonYes">Yes</string>
     <string name="buttonCancel">Cancel</string>
+    <string name="buttonOk">OK</string>
 
     <string name="textForgotPassword">Forgot Password? Recover</string>
     <string name="textPasswordRecovery">Password Recovery</string>
+    <string name="textSetupStaffAccount">Setup Staff Account</string>
     <string name="textOtpSentCheckInbox">OTP Sent - Check Inbox</string>
     <string name="textOtpResendFailed">OTP Resend Failed</string>
     <string name="textActivateAccount">Activate Account</string>
@@ -39,7 +44,31 @@
     <string name="messageOtpSuccessfullySent">OTP successfully sent</string>
     <string name="messageOtpSuccessfullyConfirmed">OTP successfully confirmed</string>
     <string name="messageOtpAlreadySentWaitForTheCountdown">OTP already sent - Wait for the Countdown</string>
-
+    <string name="messageRegistrationRequestSent">Registration request sent</string>
+    <string name="messageRegistrationRequestFailed">Registration request failed</string>
+    <string name="messageLoginRequestConfirmed">Login request confirmed</string>
+    <string name="messageLoginRequestFailed">Login request failed</string>
+    <string name="messageRecoveryRequestConfirmed">Recovery request confirmed. OTP Sent.</string>
+    <string name="messageRecoveryRequestFailed">Recovery request failed</string>
+    <string name="messageLocationPermissionGranted">Location permission granted</string>
+    <string name="messageLocationPermissionDenied">Location permission denied</string>
+    <string name="messageSendingRegistrationRequest">"Sending registration request"</string>
+    <string name="messageSendingConfirmationRequest">"Sending confirmation request"</string>
+    <string name="messageSendingOtpRequest">"Sending Otp request"</string>
+    <string name="messageSendingLoginRequest">"Sending login request"</string>
+    <string name="messageSendingPasswordChangeRequest">"Sending password change request"</string>
+    <string name="messageSendingOtpForStaffSetup">"Sending OTP for staff setup"</string>
+    <string name="messageSetupRequestFailed">"Setup request failed"</string>
+    <string name="messagePasswordChangeRequestConfirmed">Password change request confirmed. OTP Sent.</string>
+    <string name="messagePasswordChangeRequestFailed">Password change request failed</string>
+    <string name="messageConfirmationRequestConfirmed">Confirmation request confirmed</string>
+    <string name="messageConfirmationRequestFailed">Confirmation request failed</string>
+    <string name="messageOtpRequestConfirmed">OTP request confirmed</string>
+    <string name="messageOtpRequestFailed">OTP request failed</string>
+    <string name="messageEnableLocationServiceToContinue">Enable location service to continue</string>
+    <string name="messageYouCannotProceedWithoutGrantingLocationAccess">You cannot proceed without granting location access. Go to app settings and grant location permission</string>
+    <string name="messageEnterOtpAndProceedWithNewPassword">Enter OTP and proceed with new password</string>
+    <string name="messagePasswordRecoveryStaffAccountSetupInitiated">Setup staff account by confirming the OTP and entering your desired new password to continue login</string>
 
     <string name="errorMinimumFourCharacters">Minimum 4 Characters</string>
     <string name="errorMinimumSixCharacters">Minimum 6 Characters</string>
@@ -50,5 +79,7 @@
     <string name="errorCheckTermsOfServiceToContinue">Check terms of service to continue</string>
     <string name="errorLocationNotAvailable">Location not available</string>
     <string name="errorMapNotReady">Map not ready</string>
+    <string name="errorLocationServiceDisabled">Location service disabled</string>
+    <string name="errorPermissionDenied">Permission denied</string>
 
 </resources>

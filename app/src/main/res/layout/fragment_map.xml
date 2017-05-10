@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    <fragment
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/map_for_questionnaire"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -24,15 +25,13 @@
 
     </LinearLayout>
 
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_margin="32dp"
+        android:layout_margin="28dp"
         android:orientation="vertical">
-
 
         <ImageButton
             android:id="@+id/ib_map_current_location"
@@ -52,7 +51,7 @@
             android:id="@+id/ib_map_settings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="28dp"
             android:background="@drawable/selector_map_settings" />
     </LinearLayout>
 
