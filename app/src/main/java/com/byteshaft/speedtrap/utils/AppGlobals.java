@@ -11,6 +11,7 @@ public class AppGlobals extends Application {
     private static final String UNIQUE_DEVICE_ID = "unique_device_id";
     private static final String ALERT_DISTANCE = "alert_distance";
     private static final String ALERT_SPEED_LIMIT = "alert_speed_limit";
+    private static final String MOBILE_SPEED_TRAP_NOTIFIER = "mobile_speed_trap_notifier";
     private static final String ALERT_VOLUME = "alert_volume";
     private static final String SOUND_ALERT = "sound_alert";
     private static final String LOGGED_IN = "logged_in";
@@ -35,12 +36,20 @@ public class AppGlobals extends Application {
         return sPreferences.getBoolean(FIRST_RUN_MAP, true);
     }
 
+    public static void setMobileSpeedTrapNotifier(boolean mobileSpeedTrapNotifier) {
+        sPreferences.edit().putBoolean(MOBILE_SPEED_TRAP_NOTIFIER, mobileSpeedTrapNotifier).apply();
+    }
+
+    public static boolean isMobileSpeedTrapNotifier() {
+        return sPreferences.getBoolean(MOBILE_SPEED_TRAP_NOTIFIER, true);
+    }
+
     public static void setSoundAlertEnabled(boolean soundAlert) {
         sPreferences.edit().putBoolean(SOUND_ALERT, soundAlert).apply();
     }
 
     public static boolean isSoundAlertEnabled() {
-        return sPreferences.getBoolean(SOUND_ALERT, true);
+        return sPreferences.getBoolean(SOUND_ALERT, false);
     }
 
     public static boolean isLoggedIn() {
