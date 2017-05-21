@@ -38,6 +38,14 @@ public class Helpers {
     private static ProgressDialog progressDialog;
     private static boolean isCountDownTimerRunning;
 
+
+    public static final Runnable exitApp = new Runnable() {
+        public void run() {
+            MainActivity.getInstance().finish();
+            System.exit(0);
+        }
+    };
+
     public static void setStatusBarTranslucent(Activity activity) {
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
     }
@@ -244,7 +252,7 @@ public class Helpers {
     }
 
     public static void showSnackBar(String message, int time, int textColor) {
-        Snackbar snackbar = Snackbar.make(MainActivity.rlMainActivity.getRootView(), message, time);
+        Snackbar snackbar = Snackbar.make(MainActivity.getInstance().findViewById(R.id.container), message, time);
         View snackBarView = snackbar.getView();
         TextView snackBarText = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
         snackBarText.setGravity(Gravity.CENTER_HORIZONTAL);

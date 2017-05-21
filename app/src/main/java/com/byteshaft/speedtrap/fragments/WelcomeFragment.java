@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,7 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
     EditText etLoginPassword;
     public static String sLoginEmail;
     static String sLoginPassword;
+    public static boolean bIsTrapRetrievalRequestFromLogin;
 
     @Nullable
     @Override
@@ -166,19 +168,30 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
     private static void onLoginSuccess(String message, String responseText) {
         Helpers.showSnackBar(message, Snackbar.LENGTH_SHORT, Color.GREEN);
         try {
-            JSONObject jsonObject = new JSONObject(responseText);
-            JSONObject jsonObject1 = new JSONObject(jsonObject.toString());
+            JSONObject jsonObjectLoginResponseMain = new JSONObject(responseText);
+            JSONObject jsonObjectLoginResponsePreferences;
 
-            AppGlobals.setLoggedIn(true);
-            AppGlobals.putToken(jsonObject.getString("token"));
-            AppGlobals.putAlertDistance(jsonObject1.getInt("warning_radius"));
-            AppGlobals.putAlertSpeedLimit(jsonObject1.getInt("warning_speed_limit"));
-            AppGlobals.setSoundAlertEnabled(jsonObject1.getBoolean("sound_alert"));
-            AppGlobals.putAlertVolume(jsonObject1.getInt("alert_volume"));
+            Log.i("one", "" + jsonObjectLoginResponseMain);
+            AppGlobals.putToken(jsonObjectLoginResponseMain.getString("token"));
+            Log.i("Token", "" + AppGlobals.getToken());
+            AppGlobals.putUserType(Integer.parseInt(jsonObjectLoginResponseMain.getString("user_type")));
+
+            if (AppGlobals.getUserType() == 2) {
+                jsonObjectLoginResponsePreferences = new JSONObject(jsonObjectLoginResponseMain.get("staff_preferences").toString());
+                AppGlobals.setMobileSpeedTrapNotifier(jsonObjectLoginResponsePreferences.getBoolean("mobile_speed_trap_notifier"));
+            } else {
+                jsonObjectLoginResponsePreferences = new JSONObject(jsonObjectLoginResponseMain.get("user_preferences").toString());
+                AppGlobals.putAlertSpeedLimit(jsonObjectLoginResponsePreferences.getInt("warning_speed_limit"));
+            }
+            Log.i("Two", "" + jsonObjectLoginResponsePreferences);
+            AppGlobals.putAlertDistance(jsonObjectLoginResponsePreferences.getInt("warning_distance"));
+            AppGlobals.setSoundAlertEnabled(jsonObjectLoginResponsePreferences.getBoolean("sound_alert"));
+            AppGlobals.putAlertVolume(jsonObjectLoginResponsePreferences.getInt("alert_volume"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Helpers.loadFragment(MainActivity.fragmentManager, new MapFragment(), false, "MapFragment");
+        bIsTrapRetrievalRequestFromLogin = true;
+        MainActivity.sendTrapRetrievalRequest();
     }
 
     private static void onLoginFailed(String message) {

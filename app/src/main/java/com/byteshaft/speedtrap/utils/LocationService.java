@@ -13,8 +13,10 @@ import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.byteshaft.speedtrap.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -31,9 +33,12 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     public GoogleApiClient mGoogleApiClient;
     LocationRequest mLocationRequest;
-    private static int recursionCounter = 0;
+    private int recursionCounter = 0;
+    private int locationChangedCounter;
     private PowerManager.WakeLock mWakeLock;
-    public boolean bLocationAcquired;
+    private boolean isLocationAcquired;
+    LocalBroadcastManager broadcaster;
+    public boolean isBackgroundServiceRunning;
 
     public int onStartCommand (Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
@@ -41,12 +46,30 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         if (this.mWakeLock == null) {
             this.mWakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "LocationWakeLock");
         }
-
-        if (!this.mWakeLock.isHeld()) { //**Added this
+        if (!this.mWakeLock.isHeld()) {
             this.mWakeLock.acquire();
         }
         startLocationServices();
+        if (!isBackgroundServiceRunning) {
+            isBackgroundServiceRunning = true;
+        }
         return START_STICKY;
+    }
+
+    @Override
+    public boolean stopService(Intent name) {
+        isBackgroundServiceRunning = false;
+        isLocationAcquired = false;
+        return super.stopService(name);
+    }
+
+    @Override
+    public void onDestroy() {
+        locationChangedCounter = 0;
+        recursionCounter = 0;
+        isBackgroundServiceRunning = false;
+        isLocationAcquired = false;
+        super.onDestroy();
     }
 
     @Nullable
@@ -68,9 +91,13 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.i("locationChanged", "" + location);
-        if (!bLocationAcquired) {
-            bLocationAcquired = true;
+        Log.i("LocationChanged", "" + location);
+        if (locationChangedCounter > 1) {
+            isLocationAcquired = true;
+            sendLocationDataToMapFragmentToUpdateUI(true, false, R.drawable.selector_map_current_location,
+                    String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), (int) (location.getSpeed() * 3600) / 1000);
+        } else {
+            locationChangedCounter++;
         }
     }
 
@@ -111,27 +138,52 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, this);
+        broadcaster = LocalBroadcastManager.getInstance(AppGlobals.getContext());
     }
 
     public void stopLocationService() {
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient, this);
         mGoogleApiClient.disconnect();
+        locationChangedCounter = 0;
         recursionCounter = 0;
-        bLocationAcquired = false;
+        isLocationAcquired = false;
+        isBackgroundServiceRunning = false;
+        this.stopService(new Intent(AppGlobals.getContext(), LocationService.class));
     }
 
     void recursionCounter() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (recursionCounter > 160 && mGoogleApiClient.isConnected()) {
+                if (recursionCounter > 90 && mGoogleApiClient.isConnected()) {
                     stopLocationService();
-                } else if (mGoogleApiClient.isConnected()) {
+                    sendLocationDataToMapFragmentToUpdateUI(false, true, R.drawable.selector_map_current_location, null, null, 0);
+                } else if (mGoogleApiClient.isConnected() && !isLocationAcquired) {
                     recursionCounter();
                     recursionCounter++;
+                        if ((recursionCounter % 2) == 0) {
+                            sendLocationDataToMapFragmentToUpdateUI(false, false, 1, null, null, 0);
+                        } else {
+                            sendLocationDataToMapFragmentToUpdateUI(false, false, 0, null, null, 0);
+                        }
+
                 }
             }
-        },1000);
+        }, 1000);
     }
+
+    public void sendLocationDataToMapFragmentToUpdateUI(boolean locationAcquired, boolean showLocationAcquisitionFailedDialog,
+                                                        int currentLocationIconResourceType, String latitude, String longitude,
+                                                        int travellingSpeed) {
+        Intent intent = new Intent("LocationData");
+        intent.putExtra("location_acquired", String.valueOf(locationAcquired));
+        intent.putExtra("location_acquisition_failed_dialog", String.valueOf(showLocationAcquisitionFailedDialog));
+        intent.putExtra("current_location_icon_resource_type", currentLocationIconResourceType);
+        intent.putExtra("latitude", latitude);
+        intent.putExtra("longitude", longitude);
+        intent.putExtra("travelling_speed", travellingSpeed);
+        broadcaster.sendBroadcast(intent);
+    }
+
 }

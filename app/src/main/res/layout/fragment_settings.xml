@@ -10,7 +10,7 @@
         android:orientation="horizontal"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="22dp"
+        android:layout_marginEnd="18dp"
         android:layout_marginTop="42dp">
 
         <ImageButton
@@ -36,18 +36,63 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tv_settings_alert_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:textColor="#ffffff" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:background="@drawable/background_edit_text">
+
+                <Switch
+                    android:id="@+id/s_settings_alert"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:textColor="#ffffff"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/ic_alert"/>
+
+                    <SeekBar
+                        android:id="@+id/sb_settings_alert_volume"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
                 android:text="@string/textAlertDistance"
                 android:textColor="#ffffff" />
 
             <EditText
-                android:id="@+id/et_settings_alert_radius"
+                android:id="@+id/et_settings_alert_distance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_edit_text"
                 android:drawableStart="@mipmap/ic_edit_text_radius"
+                android:inputType="number"
+                android:digits="1234567890"
+                android:imeOptions="actionNext"
                 android:drawablePadding="10dp"
                 android:maxLength="24"
                 android:padding="10dp"
@@ -58,6 +103,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
                 android:text="@string/textAlertSpeedLimit"
                 android:textColor="#ffffff" />
 
@@ -68,36 +114,14 @@
                 android:background="@drawable/background_edit_text"
                 android:drawableStart="@mipmap/ic_edit_text_speed"
                 android:drawablePadding="10dp"
+                android:inputType="number"
+                android:digits="1234567890"
+                android:imeOptions="actionDone"
                 android:maxLength="24"
                 android:padding="10dp"
                 android:textColor="#ffffff"
                 android:textSize="16dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="@string/textAlertVolume"
-                android:textColor="#ffffff" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:background="@drawable/background_edit_text">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_alert"/>
-
-                <SeekBar
-                    android:id="@+id/sb_settings_alert_volume"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
 
             <Button
                 android:id="@+id/btn_settings_update"

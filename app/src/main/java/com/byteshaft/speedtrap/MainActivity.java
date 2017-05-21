@@ -9,12 +9,18 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.widget.RelativeLayout;
 
+import com.byteshaft.requests.HttpRequest;
 import com.byteshaft.speedtrap.fragments.MapFragment;
 import com.byteshaft.speedtrap.fragments.WelcomeFragment;
 import com.byteshaft.speedtrap.utils.AppGlobals;
+import com.byteshaft.speedtrap.utils.DatabaseHelpers;
+import com.byteshaft.speedtrap.utils.EndPoints;
 import com.byteshaft.speedtrap.utils.Helpers;
+
+import java.net.HttpURLConnection;
 
 import static com.byteshaft.speedtrap.utils.Helpers.openLocationServiceSettings;
 import static com.byteshaft.speedtrap.utils.Helpers.recheckLocationServiceStatus;
@@ -26,6 +32,7 @@ public class MainActivity extends FragmentActivity {
     public static FragmentManager fragmentManager;
     public static RelativeLayout rlMainActivity;
     private static MainActivity sInstance;
+    public static DatabaseHelpers mDatabaseHelpers;
 //    public static SoftKeyboard mSoftKeyboard;
 
     public static MainActivity getInstance() {
@@ -41,6 +48,7 @@ public class MainActivity extends FragmentActivity {
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         rlMainActivity = (RelativeLayout) findViewById(R.id.rl_main_layout);
         fragmentManager = getSupportFragmentManager();
+        mDatabaseHelpers = new DatabaseHelpers(this);
 //        RelativeLayout rlMainLayout = (RelativeLayout) findViewById(R.id.rl_main_layout);
 //        InputMethodManager im = (InputMethodManager) getSystemService(Service.INPUT_METHOD_SERVICE);
 //        mSoftKeyboard = new SoftKeyboard(rlMainLayout, im);
@@ -49,6 +57,7 @@ public class MainActivity extends FragmentActivity {
         } else {
             Helpers.loadFragment(fragmentManager, new WelcomeFragment(), false, "WelcomeFragment");
         }
+
     }
 
     @Override
@@ -107,5 +116,52 @@ public class MainActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         isMainActivityForeground = true;
+    }
+
+    public static void sendTrapRetrievalRequest() {
+        HttpRequest request = new HttpRequest(MainActivity.getInstance());
+        Helpers.showProgressDialog(MainActivity.getInstance(), MainActivity.getInstance().getString(R.string.messageSendingTrapRetrievalRequest));
+        request.setOnReadyStateChangeListener(new HttpRequest.OnReadyStateChangeListener() {
+            @Override
+            public void onReadyStateChange(HttpRequest request, int readyState) {
+                switch (readyState) {
+                    case HttpRequest.STATE_DONE:
+                        Helpers.dismissProgressDialog();
+                        switch (request.getStatus()) {
+                            case HttpURLConnection.HTTP_OK:
+                                onTrapRetrievalSuccess(MainActivity.getInstance().getString(R.string.messageTrapRetrievalSuccessful), request.getResponseText());
+                                break;
+                            default:
+                                onTrapRetrievalFailed(MainActivity.getInstance().getString(R.string.messageTrapRetrievalFailed) + "\n" +
+                                        request.getResponseText());
+                                break;
+                        }
+                }
+            }
+        });
+        request.setOnErrorListener(new HttpRequest.OnErrorListener() {
+            @Override
+            public void onError(HttpRequest request, short error, Exception exception) {
+                onTrapRetrievalFailed(MainActivity.getInstance().getString(R.string.messageTrapRetrievalFailed));
+            }
+        });
+        request.open("GET", EndPoints.TRAPS);
+        request.setRequestHeader("Authorization", "Token " +  AppGlobals.getToken());
+        request.send();
+    }
+
+    private static void onTrapRetrievalSuccess(String message, String responseText) {
+        Helpers.showSnackBar(message, Snackbar.LENGTH_SHORT, Color.GREEN);
+        Log.i("trapRetrievalSuccess", "" + responseText);
+        if (WelcomeFragment.bIsTrapRetrievalRequestFromLogin) {
+            AppGlobals.setLoggedIn(true);
+            Helpers.loadFragment(MainActivity.fragmentManager, new MapFragment(), false, "MapFragment");
+        } else {
+
+        }
+    }
+
+    private static void onTrapRetrievalFailed(String message) {
+        Helpers.showSnackBar(message, Snackbar.LENGTH_LONG, Color.RED);
     }
 }

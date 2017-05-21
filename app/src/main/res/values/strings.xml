@@ -27,6 +27,8 @@
     <string name="buttonYes">Yes</string>
     <string name="buttonCancel">Cancel</string>
     <string name="buttonOk">OK</string>
+    <string name="buttonRetry">Retry</string>
+    <string name="buttonExit">Exit</string>
 
     <string name="textForgotPassword">Forgot Password? Recover</string>
     <string name="textPasswordRecovery">Password Recovery</string>
@@ -37,9 +39,15 @@
     <string name="textTermsOfService">Terms of service</string>
     <string name="textAlertDistance">Alert Distance (Meters)</string>
     <string name="textAlertSpeedLimit">Alert Speed Limit (Kilometers)</string>
-    <string name="textAlertVolume">Alert Volume</string>
+    <string name="textTrapAlert">Trap Alert</string>
+    <string name="textMobileTrapAlert">Mobile Trap Alert</string>
     <string name="textLogout">Logout</string>
     <string name="textAreYouSure">Are you sure?</string>
+    <string name="textEnabled">Enabled</string>
+    <string name="textDisabled">Disabled</string>
+    <string name="textRegisterTrap">Register Trap</string>
+    <string name="textMobileTrap">Mobile</string>
+    <string name="textPermanentTrap">Permanent</string>
 
     <string name="messageOtpSuccessfullySent">OTP successfully sent</string>
     <string name="messageOtpSuccessfullyConfirmed">OTP successfully confirmed</string>
@@ -56,9 +64,12 @@
     <string name="messageSendingConfirmationRequest">"Sending confirmation request"</string>
     <string name="messageSendingOtpRequest">"Sending Otp request"</string>
     <string name="messageSendingLoginRequest">"Sending login request"</string>
+    <string name="messageSendingUpdateRequest">"Sending update request"</string>
     <string name="messageSendingPasswordChangeRequest">"Sending password change request"</string>
     <string name="messageSendingOtpForStaffSetup">"Sending OTP for staff setup"</string>
     <string name="messageSetupRequestFailed">"Setup request failed"</string>
+    <string name="messageUpdateRequestFailed">"Update request failed"</string>
+    <string name="messageUpdateSuccessful">"Update successful"</string>
     <string name="messagePasswordChangeRequestConfirmed">Password change request confirmed. OTP Sent.</string>
     <string name="messagePasswordChangeRequestFailed">Password change request failed</string>
     <string name="messageConfirmationRequestConfirmed">Confirmation request confirmed</string>
@@ -69,6 +80,31 @@
     <string name="messageYouCannotProceedWithoutGrantingLocationAccess">You cannot proceed without granting location access. Go to app settings and grant location permission</string>
     <string name="messageEnterOtpAndProceedWithNewPassword">Enter OTP and proceed with new password</string>
     <string name="messagePasswordRecoveryStaffAccountSetupInitiated">Setup staff account by confirming the OTP and entering your desired new password to continue login</string>
+    <string name="messageAlertDistanceCannotBeSetLessThan250">at least 250 meters</string>
+    <string name="messageAlertDistanceCannotBeSetMoreThan2000">not more than 2000 meters</string>
+    <string name="messageAlertSpeedLimitCannotBeSetLessThan20">at least 20 km/h</string>
+    <string name="messageUpdateInputIsInvalid">Update input is invalid</string>
+    <string name="messageWelcomeToSpeedTrap">Welcome to Speed Trap</string>
+    <string name="messageMapInfoUser">Registered Speed Traps are populated on the map. There are two types, Mobile Speed Traps and Permanent Speed Traps. Each is marked with their respective icon. Be aware of your surroundings and drive safe.</string>
+    <string name="messageMapInfoStaff">Registered Speed Traps are populated on the map. By pressing "+" in the overlay buttons layout, you can register a new Speed Trap at your current location or by tapping and holding anywhere on the map to register it at your desired location. You will be prompted for which type of Speed Trap you want to register. There are two types, Mobile Speed Trap and a Permanent Speed Trap. You can un-register a Mobile Speed Trap by tapping on it.</string>
+    <string name="messageRegisterTrapAtCurrentLocation">Want to register a Speed Trap at your current location? Select type to proceed.\n\nNote: New trap location was gathered the moment you pressed the register button.</string>
+    <string name="messageRegisterTrapAtSpecifiedLocation">Want to register a Speed Trap at your specified location? Select type to proceed.</string>
+    <string name="messageSendingTrapRetrievalRequest">"Retrieving Traps"</string>
+    <string name="messageTrapRetrievalFailed">"Trap retrieval failed"</string>
+    <string name="messageTrapRetrievalSuccessful">"Trap retrieval successful"</string>
+    <string name="messageTrapsDatabaseIsEmpty">"Traps database is empty"</string>
+    <string name="messageSendingTrapRegistrationRequest">"Sending trap registration request"</string>
+    <string name="messageTrapRegistrationFailed">"Trap registration failed"</string>
+    <string name="messageTrapRegistrationSuccessful">"Trap registration successful"</string>
+    <string name="messageSendingTrapDeletionRequest">"Sending trap deletion request"</string>
+    <string name="messageTrapDeletionFailed">"Trap deletion failed"</string>
+    <string name="messageTrapDeletionSuccessful">"Trap deletion successful"</string>
+    <string name="messageAcquiringCurrentLocation">"Acquiring current location"</string>
+    <string name="messageAcquiringCurrentLocationForHUD1">"acquiring"</string>
+    <string name="messageAcquiringCurrentLocationForHUD2">"current"</string>
+    <string name="messageAcquiringCurrentLocationForHUD3">"location"</string>
+    <string name="messageCurrentLocationAcquired">"Current location acquired"</string>
+    <string name="messageFailedToAcquireCurrentLocation">"Failed to acquire current location at the moment.\nMake sure location settings are on High Accuracy mode."</string>
 
     <string name="errorMinimumFourCharacters">Minimum 4 Characters</string>
     <string name="errorMinimumSixCharacters">Minimum 6 Characters</string>
