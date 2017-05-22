@@ -51,7 +51,7 @@ public class DatabaseHelpers extends SQLiteOpenHelper {
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.put("id", cursor.getString(
                     cursor.getColumnIndex(DatabaseConstants.ID)));
-            hashMap.put("type", cursor.getString(
+            hashMap.put("trap_type", cursor.getString(
                     cursor.getColumnIndex(DatabaseConstants.TYPE)));
             hashMap.put("location", cursor.getString(
                     cursor.getColumnIndex(DatabaseConstants.LOCATION)));

@@ -14,6 +14,13 @@
         android:layout_marginTop="42dp">
 
         <ImageButton
+            android:id="@+id/ib_settings_sync"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/selector_settings_sync" />
+
+        <ImageButton
             android:id="@+id/ib_settings_logout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

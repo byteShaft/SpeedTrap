@@ -45,6 +45,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     View baseViewSettingsFragment;
 
     TextView tvSettingsAlertHeading;
+    ImageButton ibSettingsSync;
     ImageButton ibSettingsLogout;
     EditText etSettingsAlertDistance;
     EditText etSettingsAlertSpeedLimit;
@@ -77,6 +78,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         tvSettingsAlertHeading = (TextView) baseViewSettingsFragment.findViewById(R.id.tv_settings_alert_title);
 
+        ibSettingsSync = (ImageButton) baseViewSettingsFragment.findViewById(R.id.ib_settings_sync);
+        ibSettingsSync.setOnClickListener(this);
         ibSettingsLogout = (ImageButton) baseViewSettingsFragment.findViewById(R.id.ib_settings_logout);
         ibSettingsLogout.setOnClickListener(this);
         etSettingsAlertDistance = (EditText) baseViewSettingsFragment.findViewById(R.id.et_settings_alert_distance);
@@ -133,16 +136,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         sbSettingsAlertVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                int type = Integer.parseInt(etSettingsAlertDistance.getText().toString());
-//                if (!soundFX.isAlertInProgress) {
-//                soundFX.playSound(getActivity(), SoundFX.soundEffectThree, i, false);
-//                }
-                if (type == 0) {
-                    soundFX.playSound(getActivity(), SoundFX.soundEffectThree, i, true);
-                } else if (type == 1) {
-                    soundFX.playSound(getActivity(), SoundFX.soundEffectTwo, i, true);
-                } else {
-                    soundFX.playSound(getActivity(), SoundFX.soundEffectOne, i, true);
+                if (!soundFX.isAlertInProgress) {
+                    soundFX.typeOfAlertInProgress = 0;
+                soundFX.playSound(getActivity(), SoundFX.soundEffectThree, i, false);
                 }
             }
 
@@ -163,6 +159,10 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.ib_settings_sync:
+                WelcomeFragment.isTrapRetrievalRequestFromLogin = false;
+                MainActivity.sendTrapRetrievalRequest();
+                break;
             case R.id.ib_settings_logout:
                 Helpers.AlertDialogWithPositiveFunctionNegativeButton(getActivity(),
                         getString(R.string.textLogout), getString(R.string.textAreYouSure),

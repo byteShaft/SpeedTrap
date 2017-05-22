@@ -49,7 +49,7 @@ public class AppGlobals extends Application {
     }
 
     public static boolean isSoundAlertEnabled() {
-        return sPreferences.getBoolean(SOUND_ALERT, false);
+        return sPreferences.getBoolean(SOUND_ALERT, true);
     }
 
     public static boolean isLoggedIn() {

@@ -20,7 +20,12 @@ import com.byteshaft.speedtrap.utils.DatabaseHelpers;
 import com.byteshaft.speedtrap.utils.EndPoints;
 import com.byteshaft.speedtrap.utils.Helpers;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 
 import static com.byteshaft.speedtrap.utils.Helpers.openLocationServiceSettings;
 import static com.byteshaft.speedtrap.utils.Helpers.recheckLocationServiceStatus;
@@ -129,7 +134,7 @@ public class MainActivity extends FragmentActivity {
                         Helpers.dismissProgressDialog();
                         switch (request.getStatus()) {
                             case HttpURLConnection.HTTP_OK:
-                                onTrapRetrievalSuccess(MainActivity.getInstance().getString(R.string.messageTrapRetrievalSuccessful), request.getResponseText());
+                                onTrapRetrievalSuccess(request.getResponseText());
                                 break;
                             default:
                                 onTrapRetrievalFailed(MainActivity.getInstance().getString(R.string.messageTrapRetrievalFailed) + "\n" +
@@ -150,14 +155,38 @@ public class MainActivity extends FragmentActivity {
         request.send();
     }
 
-    private static void onTrapRetrievalSuccess(String message, String responseText) {
-        Helpers.showSnackBar(message, Snackbar.LENGTH_SHORT, Color.GREEN);
-        Log.i("trapRetrievalSuccess", "" + responseText);
-        if (WelcomeFragment.bIsTrapRetrievalRequestFromLogin) {
+    private static void onTrapRetrievalSuccess(String responseText) {
+        boolean wasDatabaseNotInSync = false;
+        ArrayList<String> serverDatabaseTrapsIDs = new ArrayList<>();
+        try {
+            JSONArray jsonArrayTraps = new JSONArray(responseText);
+            for (int i = 0; i < jsonArrayTraps.length(); i++) {
+                JSONObject jsonObjectIndividualTrap = new JSONObject(String.valueOf(jsonArrayTraps.getJSONObject(i)));
+                serverDatabaseTrapsIDs.add(jsonObjectIndividualTrap.getString("id"));
+                if (!mDatabaseHelpers.entryExists(jsonObjectIndividualTrap.getString("id"))) {
+                    wasDatabaseNotInSync = true;
+                    mDatabaseHelpers.createNewEntry(jsonObjectIndividualTrap.getString("id"),
+                            jsonObjectIndividualTrap.getString("trap_type"), jsonObjectIndividualTrap.getString("location"));
+                }
+            }
+            for (int i = 0; i < mDatabaseHelpers.getAllRecords().size(); i++) {
+                if (!serverDatabaseTrapsIDs.contains(mDatabaseHelpers.getAllRecords().get(i).get("id").toString())) {
+                    wasDatabaseNotInSync = true;
+                    Log.e("EntryDeleted", "" + mDatabaseHelpers.getAllRecords().get(i).get("id"));
+                    mDatabaseHelpers.deleteEntry(mDatabaseHelpers.getAllRecords().get(i).get("id").toString());
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (wasDatabaseNotInSync) {
+            Helpers.showSnackBar(MainActivity.getInstance().getString(R.string.messageTrapsSuccessfullySynced), Snackbar.LENGTH_SHORT, Color.GREEN);
+        } else {
+            Helpers.showSnackBar(MainActivity.getInstance().getString(R.string.messageTrapsDatabaseAlreadyInSync), Snackbar.LENGTH_LONG, Color.GREEN);
+        }
+        if (WelcomeFragment.isTrapRetrievalRequestFromLogin) {
             AppGlobals.setLoggedIn(true);
             Helpers.loadFragment(MainActivity.fragmentManager, new MapFragment(), false, "MapFragment");
-        } else {
-
         }
     }
 
