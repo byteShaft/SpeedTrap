@@ -91,7 +91,8 @@
     <string name="messageRegisterTrapAtSpecifiedLocation">Want to register a Speed Trap at your specified location? Select type to proceed.</string>
     <string name="messageSendingTrapRetrievalRequest">"Retrieving Traps"</string>
     <string name="messageTrapRetrievalFailed">"Trap retrieval failed"</string>
-    <string name="messageTrapRetrievalSuccessful">"Trap retrieval successful"</string>
+    <string name="messageTrapsSuccessfullySynced">"Traps successfully synced"</string>
+    <string name="messageTrapsDatabaseAlreadyInSync">"Traps database already in sync"</string>
     <string name="messageTrapsDatabaseIsEmpty">"Traps database is empty"</string>
     <string name="messageSendingTrapRegistrationRequest">"Sending trap registration request"</string>
     <string name="messageTrapRegistrationFailed">"Trap registration failed"</string>

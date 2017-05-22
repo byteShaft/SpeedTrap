@@ -1,6 +1,6 @@
 package com.byteshaft.speedtrap.utils;
 
-import android.app.Activity;
+import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
 
@@ -17,6 +17,7 @@ public class SoundFX {
     public boolean isAlertInProgress = false;
     private float currentVolume;
     private float maxVolume;
+    public int typeOfAlertInProgress;
 
     public static int soundEffectOne = R.raw.beep_one;
     public static int soundEffectTwo = R.raw.beep_two;
@@ -28,14 +29,14 @@ public class SoundFX {
     private float playbackVolume;
     private boolean playbackLoop;
 
-    public SoundFX(Activity activity) {
-        AudioManager audioManager = (AudioManager) activity.getSystemService(AUDIO_SERVICE);
+    public SoundFX(Context context) {
+        AudioManager audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
         currentVolume = (float) audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         maxVolume = (float) audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         soundPool = new SoundPool(3, AudioManager.STREAM_MUSIC, 100);
     }
 
-    public void playSound(Activity activity, int soundID, int volume, boolean loop) {
+    public void playSound(Context context, int soundID, int volume, boolean loop) {
         if (volume == -1) {
             playbackVolume = AppGlobals.getAlertVolume() / maxVolume;
         } else {
@@ -48,7 +49,7 @@ public class SoundFX {
             soundPool = new SoundPool(3, AudioManager.STREAM_MUSIC, 100);
             isAlertInProgress = false;
         }
-        playbackSoundID = soundPool.load(activity, soundID, 1);
+        playbackSoundID = soundPool.load(context, soundID, 1);
         soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
             @Override
             public void onLoadComplete(SoundPool soundPool, int i, int i1) {
@@ -60,5 +61,13 @@ public class SoundFX {
                 }
             }
         });
+    }
+
+    void stopSound() {
+        if (isAlertInProgress) {
+            soundPool.stop(playbackSoundID);
+            soundPool.release();
+            isAlertInProgress = false;
+        }
     }
 }

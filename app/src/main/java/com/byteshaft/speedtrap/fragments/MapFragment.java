@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -15,8 +16,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.Interpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,6 +30,7 @@ import com.byteshaft.requests.HttpRequest;
 import com.byteshaft.speedtrap.MainActivity;
 import com.byteshaft.speedtrap.R;
 import com.byteshaft.speedtrap.utils.AppGlobals;
+import com.byteshaft.speedtrap.utils.DatabaseHelpers;
 import com.byteshaft.speedtrap.utils.EndPoints;
 import com.byteshaft.speedtrap.utils.Helpers;
 import com.byteshaft.speedtrap.utils.LocationService;
@@ -34,6 +38,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -43,6 +48,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by fi8er1 on 23/04/2017.
@@ -50,6 +57,9 @@ import java.net.HttpURLConnection;
 
 public class MapFragment extends Fragment implements View.OnClickListener {
 
+
+    boolean markerBounce;
+    private DatabaseHelpers mDatabaseHelpers;
     public static boolean isMapFragmentOpen;
     public static String mapLocationPoint;
     static ImageButton ibMapFragmentCurrentLocation;
@@ -171,6 +181,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
 
         rlMapFragmentInfoWindow = (RelativeLayout) baseViewMapFragment.findViewById(R.id.rl_map_info_window);
         rlMapFragmentInfoWindow.setOnClickListener(this);
+        mDatabaseHelpers = new DatabaseHelpers(getActivity());
 
         llMapFragmentHUD = (LinearLayout) baseViewMapFragment.findViewById(R.id.ll_map_hud);
         llMapFragmentHUDSpeedometer = (LinearLayout) baseViewMapFragment.findViewById(R.id.ll_map_hud_speedometer);
@@ -508,11 +519,13 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                             ibMapFragmentCurrentLocation.setBackgroundResource(R.drawable.selector_map_current_location_on);
                             isMapCameraSetToCurrentLocationByTheUser = true;
                             isCameraAutoAnimating = false;
+                            populateTrapMarkers(mDatabaseHelpers.getAllRecords());
                         }
 
                         @Override
                         public void onCancel() {
                             isCameraAutoAnimating = false;
+                            populateTrapMarkers(mDatabaseHelpers.getAllRecords());
                         }
                     });
                 }
@@ -551,6 +564,47 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 tvMapFragmentHUDSpeedometer.setText(String.valueOf(travellingSpeed));
             }
         }
+    }
+
+    private void populateTrapMarkers(ArrayList<HashMap> trapsArrayList) {
+        for (int i = 0; i < trapsArrayList.size(); i++) {
+            String[] stringTrapLocationLatLngArray = trapsArrayList.get(i).get("location").toString().split(",");
+            mMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(stringTrapLocationLatLngArray[0]),
+                    Double.parseDouble(stringTrapLocationLatLngArray[1])))
+                    .icon(BitmapDescriptorFactory.fromResource(getAppropriateMapMarkerIconImageID(
+                            Integer.parseInt(trapsArrayList.get(i).get("trap_type").toString()))))
+                    .snippet(trapsArrayList.get(i).get("id").toString()));
+        }
+    }
+    private int getAppropriateMapMarkerIconImageID(int trapType) {
+        int id;
+        if (trapType == 0) {
+            id = R.drawable.ic_map_current_location_on;
+        } else  {
+            id = R.drawable.ic_map_current_location_off;
+        }
+        return id;
+    }
+
+    private void setMarkerBounce(final Marker marker) {
+        final Handler handler = new Handler();
+        final long startTime = SystemClock.uptimeMillis();
+        final long duration = 650;
+        final Interpolator interpolator = new AccelerateDecelerateInterpolator();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (markerBounce) {
+                    long elapsed = SystemClock.uptimeMillis() - startTime;
+                    float t = Math.max(interpolator.getInterpolation((float) elapsed/duration), 0);
+                    marker.setAnchor(0.5f, 1.0f +  t);
+                    handler.postDelayed(this, 12);
+                } else {
+                    handler.removeCallbacks(this);
+                    marker.setAnchor(0.5f, 1.0f);
+                }
+            }
+        });
     }
 
 }

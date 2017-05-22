@@ -42,7 +42,7 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
     EditText etLoginPassword;
     public static String sLoginEmail;
     static String sLoginPassword;
-    public static boolean bIsTrapRetrievalRequestFromLogin;
+    public static boolean isTrapRetrievalRequestFromLogin;
 
     @Nullable
     @Override
@@ -190,7 +190,7 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        bIsTrapRetrievalRequestFromLogin = true;
+        isTrapRetrievalRequestFromLogin = true;
         MainActivity.sendTrapRetrievalRequest();
     }
 
